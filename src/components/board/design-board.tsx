@@ -23,7 +23,6 @@ interface DesignBoardProps {
     feedback: string,
   ) => Promise<void>;
   onGenerateBoard: () => void;
-  onOpenCollaborator: () => void;
   onGenerateAgenda?: (numDays: number) => void;
   agendaLoading?: boolean;
   boardComplete?: boolean;
@@ -42,7 +41,6 @@ export default function DesignBoard({
   onCrossCellDrop,
   onFixWithAiAgenda,
   onGenerateBoard,
-  onOpenCollaborator,
   onGenerateAgenda,
   agendaLoading,
   boardComplete,
@@ -77,18 +75,6 @@ export default function DesignBoard({
             }
           >
             <span>&#x2728;</span> AI Generate Full Board
-          </button>
-          <button
-            onClick={onOpenCollaborator}
-            disabled={disabled}
-            className={
-              "font-semibold px-4 py-2 rounded-lg transition-colors text-sm flex items-center gap-1.5 " +
-              (disabled
-                ? "bg-stone-300 text-stone-500 cursor-not-allowed"
-                : "bg-amber-500 hover:bg-amber-600 text-white")
-            }
-          >
-            {"\uD83D\uDCAC"} AI Collaborator
           </button>
         </div>
       </div>

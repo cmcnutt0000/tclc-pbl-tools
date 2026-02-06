@@ -45,7 +45,8 @@ export default function BoardPageClient({
   const [variationLoading, setVariationLoading] = useState(false);
   const [showGeneratedBanner, setShowGeneratedBanner] = useState(false);
 
-  const [showCollaborator, setShowCollaborator] = useState(false);
+  const [collaboratorCollapsed, setCollaboratorCollapsed] = useState(true);
+  const [collaboratorFullscreen, setCollaboratorFullscreen] = useState(false);
   const [collaboratorLoading, setCollaboratorLoading] = useState(false);
   const [collaboratorResponse, setCollaboratorResponse] =
     useState<CollaboratorResponse | null>(null);
@@ -519,10 +520,12 @@ export default function BoardPageClient({
     }
   }
 
+  const sidebarOpen = !collaboratorCollapsed;
+
   return (
-    <div className="min-h-screen bg-stone-50">
-      <header className="bg-teal-600 text-white shadow-md">
-        <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between">
+    <div className="min-h-screen bg-stone-50 flex flex-col">
+      <header className="bg-teal-600 text-white shadow-md shrink-0">
+        <div className="mx-auto px-6 py-3 flex items-center justify-between">
           <a
             href="/"
             className="text-lg font-bold hover:text-teal-100 transition-colors"
@@ -531,44 +534,74 @@ export default function BoardPageClient({
           </a>
         </div>
       </header>
-      <div className="max-w-7xl mx-auto px-4 pt-4">
-        <ContextModal context={context} onChange={handleContextChange} />
-      </div>
-      {showGeneratedBanner && (
-        <div className="max-w-7xl mx-auto px-4 pt-4">
-          <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 flex items-center justify-between">
-            <p className="text-sm text-teal-800">
-              Is this what you were thinking? Edit any section below, or use{" "}
-              <strong>Improve with AI</strong> on individual cells to refine
-              them.
-            </p>
-            <button
-              onClick={() => setShowGeneratedBanner(false)}
-              className="text-teal-400 hover:text-teal-600 ml-4"
-            >
-              &#x2715;
-            </button>
+
+      <div className="flex flex-1 overflow-hidden">
+        {/* Main board area */}
+        <div
+          className={
+            "flex-1 overflow-y-auto transition-all duration-200 " +
+            (collaboratorFullscreen && sidebarOpen ? "hidden" : "")
+          }
+        >
+          <div className="max-w-7xl mx-auto px-4 pt-4">
+            <ContextModal context={context} onChange={handleContextChange} />
           </div>
+          {showGeneratedBanner && (
+            <div className="max-w-7xl mx-auto px-4 pt-4">
+              <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 flex items-center justify-between">
+                <p className="text-sm text-teal-800">
+                  Is this what you were thinking? Edit any section below, or use{" "}
+                  <strong>Improve with AI</strong> on individual cells to refine
+                  them.
+                </p>
+                <button
+                  onClick={() => setShowGeneratedBanner(false)}
+                  className="text-teal-400 hover:text-teal-600 ml-4"
+                >
+                  &#x2715;
+                </button>
+              </div>
+            </div>
+          )}
+          <DesignBoard
+            content={content}
+            context={context}
+            onChange={handleContentChange}
+            onAiCellClick={handleAiCellClick}
+            onFixWithAi={handleFixWithAi}
+            onCrossCellDrop={handleCrossCellDrop}
+            onFixWithAiAgenda={handleFixWithAiAgenda}
+            onGenerateBoard={handleGenerateBoard}
+            onGenerateAgenda={handleGenerateAgenda}
+            agendaLoading={agendaLoading}
+            boardComplete={boardComplete}
+            boardTitle={title}
+            onTitleChange={handleTitleChange}
+            disabled={!contextComplete}
+            canGenerateBoard={filledCellCount >= 2}
+          />
         </div>
-      )}
-      <DesignBoard
-        content={content}
-        context={context}
-        onChange={handleContentChange}
-        onAiCellClick={handleAiCellClick}
-        onFixWithAi={handleFixWithAi}
-        onCrossCellDrop={handleCrossCellDrop}
-        onFixWithAiAgenda={handleFixWithAiAgenda}
-        onGenerateBoard={handleGenerateBoard}
-        onOpenCollaborator={() => setShowCollaborator(true)}
-        onGenerateAgenda={handleGenerateAgenda}
-        agendaLoading={agendaLoading}
-        boardComplete={boardComplete}
-        boardTitle={title}
-        onTitleChange={handleTitleChange}
-        disabled={!contextComplete}
-        canGenerateBoard={filledCellCount >= 2}
-      />
+
+        {/* Collaborator sidebar — always rendered */}
+        <CollaboratorPanel
+          collapsed={collaboratorCollapsed}
+          onToggleCollapse={() => {
+            setCollaboratorCollapsed(!collaboratorCollapsed);
+            if (!collaboratorCollapsed) setCollaboratorFullscreen(false);
+          }}
+          fullscreen={collaboratorFullscreen}
+          onToggleFullscreen={() =>
+            setCollaboratorFullscreen(!collaboratorFullscreen)
+          }
+          onSubmit={handleCollaborate}
+          loading={collaboratorLoading}
+          response={collaboratorResponse}
+          onAcceptChange={handleAcceptChange}
+          onAcceptAll={handleAcceptAllChanges}
+        />
+      </div>
+
+      {/* Overlays (modals) */}
       {showSuggestions && (
         <SuggestionPanel
           cellLabel={activeCellLabel}
@@ -586,19 +619,6 @@ export default function BoardPageClient({
         loading={agendaLoading}
         onDismiss={() => setAgendaLoading(false)}
       />
-      {showCollaborator && (
-        <CollaboratorPanel
-          onDismiss={() => {
-            setShowCollaborator(false);
-            setCollaboratorResponse(null);
-          }}
-          onSubmit={handleCollaborate}
-          loading={collaboratorLoading}
-          response={collaboratorResponse}
-          onAcceptChange={handleAcceptChange}
-          onAcceptAll={handleAcceptAllChanges}
-        />
-      )}
     </div>
   );
 }
