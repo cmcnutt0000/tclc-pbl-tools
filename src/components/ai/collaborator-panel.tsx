@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import CollapsibleMarkdown from "@/components/board/collapsible-markdown";
 import type {
   CollaboratorResponse,
   ProposedChange,
@@ -394,17 +395,19 @@ export default function CollaboratorPanel({
                         {/* Diff preview */}
                         {change.currentValue && (
                           <div className="text-sm text-stone-500 bg-stone-50 rounded px-3 py-2 leading-relaxed">
-                            <span className="font-semibold text-stone-600">
+                            <p className="font-semibold text-stone-600 mb-1">
                               Current:
-                            </span>{" "}
-                            {change.currentValue}
+                            </p>
+                            <CollapsibleMarkdown
+                              content={change.currentValue}
+                            />
                           </div>
                         )}
                         <div className="text-sm text-teal-800 bg-teal-50 rounded px-3 py-2 leading-relaxed">
-                          <span className="font-semibold text-teal-700">
+                          <p className="font-semibold text-teal-700 mb-1">
                             Proposed:
-                          </span>{" "}
-                          {change.proposedValue}
+                          </p>
+                          <CollapsibleMarkdown content={change.proposedValue} />
                         </div>
 
                         {/* Rationale */}
