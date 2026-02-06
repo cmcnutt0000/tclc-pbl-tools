@@ -172,7 +172,7 @@ export default function ContextModal({ context, onChange }: ContextModalProps) {
                 className={
                   "text-xs px-2 py-1 rounded-full border transition-colors " +
                   ((context.subjects || []).includes(s)
-                    ? "bg-teal-100 border-teal-300 text-teal-700"
+                    ? "bg-brand-100 border-brand-300 text-brand-700"
                     : "bg-white border-stone-200 text-stone-500 hover:border-stone-300")
                 }
               >

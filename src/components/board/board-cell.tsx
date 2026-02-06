@@ -128,9 +128,9 @@ export default function BoardCell({
   const containerClass =
     "group relative rounded-lg border transition-all " +
     (editing
-      ? "border-teal-400 ring-2 ring-teal-100 shadow-md"
+      ? "border-brand-400 ring-2 ring-brand-100 shadow-md"
       : dragOver
-        ? "border-teal-400 ring-2 ring-teal-100 bg-teal-50/30"
+        ? "border-brand-400 ring-2 ring-brand-100 bg-brand-50/30"
         : "border-stone-200 hover:border-stone-300 hover:shadow-sm");
 
   return (
@@ -211,7 +211,7 @@ export default function BoardCell({
           value={cell.value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={() => setEditing(false)}
-          className="w-full px-3 py-2 mb-2 bg-transparent resize-none text-sm text-stone-800 placeholder:text-stone-300 focus:outline-none min-h-[60px]"
+          className="w-full px-4 py-3 mx-1 mb-3 bg-white/80 rounded-md resize-none text-sm text-stone-800 placeholder:text-stone-300 focus:outline-none min-h-[80px]"
           placeholder={"Enter " + cell.label.toLowerCase() + "..."}
           rows={2}
         />
@@ -243,7 +243,7 @@ export default function BoardCell({
               const newSection = "\n- **New Section**\n  - Add details here";
               onChange(cell.value.trimEnd() + newSection);
             }}
-            className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-stone-400 hover:text-teal-600 font-medium flex items-center gap-1"
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-stone-400 hover:text-brand-600 font-medium flex items-center gap-1"
           >
             + Add section
           </button>
@@ -257,7 +257,7 @@ export default function BoardCell({
               value={fixFeedback}
               onChange={(e) => setFixFeedback(e.target.value)}
               placeholder="What would you like changed?"
-              className="w-full text-xs border border-stone-200 rounded px-2 py-1.5 resize-none focus:outline-none focus:border-teal-400 bg-white"
+              className="w-full text-xs border border-stone-200 rounded px-2 py-1.5 resize-none focus:outline-none focus:border-brand-400 bg-white"
               rows={2}
               disabled={fixLoading}
               autoFocus
@@ -277,7 +277,7 @@ export default function BoardCell({
                   "text-xs px-2 py-1 rounded font-medium " +
                   (fixLoading || !fixFeedback.trim()
                     ? "bg-stone-200 text-stone-400"
-                    : "bg-teal-600 hover:bg-teal-700 text-white")
+                    : "bg-brand-800 hover:bg-brand-900 text-white")
                 }
               >
                 {fixLoading ? "Improving..." : "\u2728 Improve"}
@@ -304,7 +304,7 @@ export default function BoardCell({
               value={addDescription}
               onChange={(e) => setAddDescription(e.target.value)}
               placeholder="Describe what to add (e.g. 'a journaling activity')"
-              className="w-full text-xs border border-stone-200 rounded px-2 py-1.5 resize-none focus:outline-none focus:border-teal-400 bg-white"
+              className="w-full text-xs border border-stone-200 rounded px-2 py-1.5 resize-none focus:outline-none focus:border-brand-400 bg-white"
               rows={2}
               disabled={addLoading}
               autoFocus
@@ -324,7 +324,7 @@ export default function BoardCell({
                   "text-xs px-2 py-1 rounded font-medium " +
                   (addLoading || !addDescription.trim()
                     ? "bg-stone-200 text-stone-400"
-                    : "bg-teal-600 hover:bg-teal-700 text-white")
+                    : "bg-brand-800 hover:bg-brand-900 text-white")
                 }
               >
                 {addLoading ? "Adding..." : "\u2795 Add"}

@@ -45,7 +45,7 @@ function AiImproveButton({
         value={feedback}
         onChange={(e) => setFeedback(e.target.value)}
         placeholder="What would you like changed?"
-        className="w-full text-xs border border-stone-200 rounded px-2 py-1.5 resize-none focus:outline-none focus:border-teal-400 bg-white"
+        className="w-full text-xs border border-stone-200 rounded px-2 py-1.5 resize-none focus:outline-none focus:border-brand-400 bg-white"
         rows={2}
         disabled={loading}
         autoFocus
@@ -65,7 +65,7 @@ function AiImproveButton({
             "text-xs px-2 py-1 rounded font-medium " +
             (loading || !feedback.trim()
               ? "bg-stone-200 text-stone-400"
-              : "bg-teal-600 hover:bg-teal-700 text-white")
+              : "bg-brand-800 hover:bg-brand-900 text-white")
           }
         >
           {loading ? "Improving..." : "\u2728 Improve"}
@@ -130,7 +130,7 @@ export default function Agenda({
             Agenda
           </h2>
         </button>
-        <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">
+        <span className="text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">
           Sessions
         </span>
         {onGenerateAgenda && (
@@ -159,7 +159,7 @@ export default function Agenda({
                     "text-xs font-semibold px-3 py-1 rounded-lg transition-colors " +
                     (agendaLoading
                       ? "bg-stone-300 text-stone-500"
-                      : "bg-teal-600 hover:bg-teal-700 text-white")
+                      : "bg-brand-800 hover:bg-brand-900 text-white")
                   }
                 >
                   Generate
@@ -185,7 +185,7 @@ export default function Agenda({
                   "text-xs font-semibold px-3 py-1 rounded-lg transition-colors flex items-center gap-1 " +
                   (!boardComplete || agendaLoading
                     ? "bg-stone-200 text-stone-400 cursor-not-allowed"
-                    : "bg-teal-600 hover:bg-teal-700 text-white")
+                    : "bg-brand-800 hover:bg-brand-900 text-white")
                 }
               >
                 <span>&#x2728;</span> AI Plan Agenda
@@ -199,7 +199,8 @@ export default function Agenda({
           {entries.map((entry, i) => (
             <div
               key={entry.id}
-              className="group/entry bg-amber-50 rounded-lg border border-stone-200 p-3 space-y-2"
+              className="group/entry rounded-lg border border-stone-200 p-3 space-y-2"
+              style={{ backgroundColor: "#E3D9C7" }}
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-stone-600">
@@ -215,7 +216,7 @@ export default function Agenda({
                 )}
               </div>
               {entry.date && (
-                <div className="text-[10px] font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded inline-block uppercase tracking-wide">
+                <div className="text-[10px] font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded inline-block uppercase tracking-wide">
                   {entry.date}
                 </div>
               )}
@@ -320,7 +321,7 @@ export default function Agenda({
           ))}
           <button
             onClick={addEntry}
-            className="border-2 border-dashed border-amber-200 rounded-lg text-amber-400 hover:border-amber-400 hover:text-amber-600 transition-colors flex items-center justify-center min-h-[200px] text-sm font-medium"
+            className="border-2 border-dashed border-brand-200 rounded-lg text-brand-400 hover:border-brand-400 hover:text-brand-600 transition-colors flex items-center justify-center min-h-[200px] text-sm font-medium"
           >
             + Add Session
           </button>

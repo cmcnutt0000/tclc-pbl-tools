@@ -74,7 +74,7 @@ export default function InitialPlanning({
     <section className="mb-8">
       <div className="flex items-center gap-3 mb-3">
         <h2 className="text-lg font-bold text-stone-800">Initial Planning</h2>
-        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+        <span className="text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">
           Phase 1
         </span>
       </div>
@@ -105,7 +105,7 @@ export default function InitialPlanning({
                   onAddWithAi("mainIdea", data.mainIdea, desc)
                 }
                 onCrossCellDrop={onCrossCellDrop}
-                sectionColor="#dbeafe"
+                sectionColor="#D5E3ED"
               />
               <BoardCell
                 cell={data.noticeReflect}
@@ -119,7 +119,7 @@ export default function InitialPlanning({
                   onAddWithAi("noticeReflect", data.noticeReflect, desc)
                 }
                 onCrossCellDrop={onCrossCellDrop}
-                sectionColor="#dbeafe"
+                sectionColor="#D5E3ED"
               />
               <BoardCell
                 cell={data.openingActivity}
@@ -135,7 +135,7 @@ export default function InitialPlanning({
                   onAddWithAi("openingActivity", data.openingActivity, desc)
                 }
                 onCrossCellDrop={onCrossCellDrop}
-                sectionColor="#dbeafe"
+                sectionColor="#D5E3ED"
               />
               <BoardCell
                 cell={data.communityPartners}
@@ -151,7 +151,7 @@ export default function InitialPlanning({
                   onAddWithAi("communityPartners", data.communityPartners, desc)
                 }
                 onCrossCellDrop={onCrossCellDrop}
-                sectionColor="#dbeafe"
+                sectionColor="#D5E3ED"
               />
             </div>
           )}
@@ -188,7 +188,7 @@ export default function InitialPlanning({
                       onAddWithAi("standards-" + subject, stdCell, desc)
                     }
                     onCrossCellDrop={onCrossCellDrop}
-                    sectionColor="#dbeafe"
+                    sectionColor="#D5E3ED"
                   />
                 );
               })}
@@ -221,7 +221,7 @@ export default function InitialPlanning({
                     onChange={(v) => updateAdditional(i, v)}
                     onAiClick={() => onAiClick("additional-" + i, cell)}
                     onCrossCellDrop={onCrossCellDrop}
-                    sectionColor="#dbeafe"
+                    sectionColor="#D5E3ED"
                   />
                   <button
                     onClick={() => removeColumn(i)}
@@ -238,7 +238,7 @@ export default function InitialPlanning({
       <div className="mt-3">
         <button
           onClick={addColumn}
-          className="border-2 border-dashed border-blue-200 rounded-lg text-blue-400 hover:border-blue-400 hover:text-blue-600 transition-colors px-4 py-2 text-sm font-medium"
+          className="border-2 border-dashed border-brand-200 rounded-lg text-brand-400 hover:border-brand-400 hover:text-brand-600 transition-colors px-4 py-2 text-sm font-medium"
         >
           + Add Additional
         </button>

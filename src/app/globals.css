@@ -1,25 +1,40 @@
 @import url("https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600;700&display=swap");
+@import url("https://fonts.cdnfonts.com/css/coolvetica-2");
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 :root {
-    --background: #fafaf9;
-    --foreground: #1c1917;
+    --background: #f4ebdd;
+    --foreground: #1a4450;
 }
 
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --color-teal-50: #f0fdfa;
-    --color-teal-100: #ccfbf1;
-    --color-teal-200: #99f6e4;
-    --color-teal-300: #5eead4;
-    --color-teal-400: #2dd4bf;
-    --color-teal-500: #14b8a6;
-    --color-teal-600: #0d9488;
-    --color-teal-700: #0f766e;
-    --color-teal-800: #115e59;
-    --color-teal-900: #134e4a;
+    /* Primary brand */
+    --color-brand-50: #eef4f8;
+    --color-brand-100: #d5e3ed;
+    --color-brand-200: #b3cedc;
+    --color-brand-300: #8fb7cb;
+    --color-brand-400: #6e92b0;
+    --color-brand-500: #567a96;
+    --color-brand-600: #42617a;
+    --color-brand-700: #2e4a5e;
+    --color-brand-800: #1a4450;
+    --color-brand-900: #0f2a32;
+
+    /* Warm neutrals (replacing stone with warmer tones for cream bg) */
+    --color-stone-50: #faf7f2;
+    --color-stone-100: #f4ebdd;
+    --color-stone-200: #e8ddcc;
+    --color-stone-300: #d4c7b3;
+    --color-stone-400: #a89b8a;
+    --color-stone-500: #7a7067;
+    --color-stone-600: #5c544c;
+    --color-stone-700: #3e3832;
+    --color-stone-800: #2a2520;
+    --color-stone-900: #1a1612;
+    /* Amber — reserved for suggestions/AI */
     --color-amber-50: #fffbeb;
     --color-amber-100: #fef3c7;
     --color-amber-200: #fde68a;
@@ -27,23 +42,28 @@
     --color-amber-400: #fbbf24;
     --color-amber-500: #f59e0b;
     --color-amber-600: #d97706;
-    --color-coral-400: #fb923c;
-    --color-coral-500: #f97316;
-    --color-coral-600: #ea580c;
-    --color-stone-50: #fafaf9;
-    --color-stone-100: #f5f5f4;
-    --color-stone-200: #e7e5e4;
-    --color-stone-300: #d6d3d1;
-    --color-stone-400: #a8a29e;
-    --color-stone-500: #78716c;
-    --color-stone-600: #57534e;
-    --color-stone-700: #44403c;
-    --color-stone-800: #292524;
-    --color-stone-900: #1c1917;
-    --color-section-planning: #dbeafe;
-    --color-section-design: #ffe4e6;
-    --color-section-agenda: #fef3c7;
+    /* Section colors — muted, dark-tinted, cohesive */
+    --color-section-planning: #d5e3ed;
+    --color-section-design: #dccec4;
+    --color-section-milestones: #c8d8ce;
+    --color-section-agenda: #e3d9c7;
+    /* Red — reserved for errors/destructive */
+    --color-red-50: #fef2f2;
+    --color-red-100: #fee2e2;
+    --color-red-200: #fecaca;
+    --color-red-400: #f87171;
+    --color-red-500: #ef4444;
+    --color-red-600: #dc2626;
+    /* Green — reserved for success/applied */
+    --color-green-50: #f0fdf4;
+    --color-green-100: #dcfce7;
+    --color-green-200: #bbf7d0;
+    --color-green-600: #16a34a;
+    --color-green-700: #15803d;
+    --color-green-800: #166534;
+    /* Fonts */
     --font-sans: "Cabin", sans-serif;
+    --font-display: "Coolvetica", "Cabin", sans-serif;
 }
 
 body {
@@ -54,4 +74,10 @@ body {
 
 textarea {
     font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--font-display);
 }

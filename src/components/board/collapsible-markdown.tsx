@@ -224,7 +224,7 @@ function CollapsibleSection({
                 setEditing(false);
               }
             }}
-            className="w-full text-sm text-stone-800 bg-white border border-teal-300 rounded px-3 py-2 my-1 resize-none focus:outline-none focus:ring-1 focus:ring-teal-300 min-h-[40px]"
+            className="w-full text-sm text-stone-800 bg-white border border-brand-300 rounded-md px-3 py-3 my-2 resize-none focus:outline-none focus:ring-1 focus:ring-brand-300 min-h-[50px]"
           />
         </div>
       );
@@ -249,7 +249,7 @@ function CollapsibleSection({
       <div
         className={
           "group/section border-b border-stone-100 last:border-b-0 transition-all " +
-          (isDragOver ? "border-t-2 border-t-teal-400" : "")
+          (isDragOver ? "border-t-2 border-t-brand-400" : "")
         }
         onDragOver={(e) => onDragOver(e, index)}
         onDrop={(e) => onDrop(e, index)}
@@ -265,7 +265,7 @@ function CollapsibleSection({
                 setEditing(false);
               }
             }}
-            className="w-full text-sm text-stone-800 bg-white border border-teal-300 rounded px-3 py-2 my-1 resize-none focus:outline-none focus:ring-1 focus:ring-teal-300 min-h-[60px]"
+            className="w-full text-sm text-stone-800 bg-white border border-brand-300 rounded-md px-3 py-3 my-2 resize-none focus:outline-none focus:ring-1 focus:ring-brand-300 min-h-[70px]"
           />
         </div>
       </div>
@@ -276,7 +276,7 @@ function CollapsibleSection({
     <div
       className={
         "group/section border-b border-stone-100 last:border-b-0 transition-all " +
-        (isDragOver ? "border-t-2 border-t-teal-400" : "")
+        (isDragOver ? "border-t-2 border-t-brand-400" : "")
       }
       onDragOver={(e) => onDragOver(e, index)}
       onDrop={(e) => onDrop(e, index)}

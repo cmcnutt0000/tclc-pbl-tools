@@ -123,8 +123,8 @@ function DiffSectionCard({
 
   const colorClass = accepted
     ? "bg-green-50 text-green-800 border border-green-200"
-    : "bg-teal-50 text-teal-800";
-  const labelColor = accepted ? "text-green-700" : "text-teal-700";
+    : "bg-brand-50 text-brand-800";
+  const labelColor = accepted ? "text-green-700" : "text-brand-700";
 
   return (
     <div
@@ -188,13 +188,13 @@ function ChangeDiffView({
           "text-sm rounded px-3 py-2 leading-relaxed " +
           (accepted
             ? "bg-green-50 text-green-800 border border-green-200"
-            : "bg-teal-50 text-teal-800")
+            : "bg-brand-50 text-brand-800")
         }
       >
         <p
           className={
             "font-semibold mb-1 " +
-            (accepted ? "text-green-700" : "text-teal-700")
+            (accepted ? "text-green-700" : "text-brand-700")
           }
         >
           {accepted ? "\u2713 Applied:" : "Proposed:"}
@@ -479,9 +479,9 @@ export default function CollaboratorPanel({
               <button
                 key={s.id}
                 onClick={() => handleStarterClick(s.message)}
-                className="w-full text-left px-4 py-3 rounded-lg border border-stone-200 hover:border-teal-300 hover:bg-teal-50/50 transition-colors group"
+                className="w-full text-left px-4 py-3 rounded-lg border border-stone-200 hover:border-brand-300 hover:bg-brand-50/50 transition-colors group"
               >
-                <span className="text-sm font-medium text-stone-700 group-hover:text-teal-700 flex items-center gap-2">
+                <span className="text-sm font-medium text-stone-700 group-hover:text-brand-700 flex items-center gap-2">
                   <span className="text-base">{s.icon}</span>
                   {s.label}
                 </span>
@@ -562,7 +562,7 @@ export default function CollaboratorPanel({
                   {pendingCount > 1 && (
                     <button
                       onClick={handleAcceptAllRemaining}
-                      className="text-xs font-medium text-teal-600 hover:text-teal-700"
+                      className="text-xs font-medium text-brand-600 hover:text-brand-700"
                     >
                       Accept all remaining ({pendingCount})
                     </button>
@@ -613,7 +613,7 @@ export default function CollaboratorPanel({
                               "text-sm rounded px-3 py-2 leading-relaxed " +
                               (status === "accepted"
                                 ? "bg-green-50 text-green-800 border border-green-200"
-                                : "bg-teal-50 text-teal-800")
+                                : "bg-brand-50 text-brand-800")
                             }
                           >
                             <p
@@ -621,7 +621,7 @@ export default function CollaboratorPanel({
                                 "font-semibold mb-1 " +
                                 (status === "accepted"
                                   ? "text-green-700"
-                                  : "text-teal-700")
+                                  : "text-brand-700")
                               }
                             >
                               {status === "accepted"
@@ -644,7 +644,7 @@ export default function CollaboratorPanel({
                           <div className="flex gap-2 pt-1">
                             <button
                               onClick={() => handleAccept(i, change)}
-                              className="text-sm font-medium px-3 py-1.5 rounded bg-teal-600 hover:bg-teal-700 text-white transition-colors"
+                              className="text-sm font-medium px-3 py-1.5 rounded bg-brand-800 hover:bg-brand-900 text-white transition-colors"
                             >
                               {"\u2713"} Accept
                             </button>
@@ -690,7 +690,7 @@ export default function CollaboratorPanel({
             placeholder={
               response ? "Follow up..." : "Ask anything about your board..."
             }
-            className="flex-1 text-sm border border-stone-200 rounded-lg px-3 py-2 focus:outline-none focus:border-teal-400"
+            className="flex-1 text-sm border border-stone-200 rounded-lg px-3 py-2 focus:outline-none focus:border-brand-400"
             disabled={loading}
           />
           <button
@@ -700,7 +700,7 @@ export default function CollaboratorPanel({
               "text-sm font-medium px-4 py-2 rounded-lg transition-colors " +
               (loading || !inputText.trim()
                 ? "bg-stone-200 text-stone-400"
-                : "bg-teal-600 hover:bg-teal-700 text-white")
+                : "bg-brand-800 hover:bg-brand-900 text-white")
             }
           >
             Send

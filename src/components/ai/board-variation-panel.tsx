@@ -35,7 +35,7 @@ function LoadingSpinner() {
 
   return (
     <div className="text-center py-16 px-6">
-      <div className="inline-block w-10 h-10 border-3 border-teal-500 border-t-transparent rounded-full animate-spin" />
+      <div className="inline-block w-10 h-10 border-3 border-brand-400 border-t-transparent rounded-full animate-spin" />
       <p className="text-lg font-medium text-stone-700 mt-4">
         {LOADING_MESSAGES[msgIndex]}
       </p>

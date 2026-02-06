@@ -563,12 +563,12 @@ export default function BoardPageClient({
   const sidebarOpen = !collaboratorCollapsed;
 
   return (
-    <div className="min-h-screen bg-stone-50 flex flex-col">
-      <header className="bg-teal-600 text-white shadow-md shrink-0">
+    <div className="min-h-screen bg-background flex flex-col">
+      <header className="bg-brand-800 text-white shadow-md shrink-0">
         <div className="mx-auto px-6 py-3 flex items-center justify-between">
           <a
             href="/"
-            className="text-lg font-bold hover:text-teal-100 transition-colors"
+            className="text-lg font-[var(--font-display)] font-bold hover:text-brand-200 transition-colors"
           >
             TCLC PBL Tools
           </a>
@@ -592,15 +592,15 @@ export default function BoardPageClient({
           </div>
           {showGeneratedBanner && (
             <div className="max-w-7xl mx-auto px-4 pt-4">
-              <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 flex items-center justify-between">
-                <p className="text-sm text-teal-800">
+              <div className="bg-brand-50 border border-brand-200 rounded-lg px-4 py-3 flex items-center justify-between">
+                <p className="text-sm text-brand-800">
                   Is this what you were thinking? Edit any section below, or use{" "}
                   <strong>Improve with AI</strong> on individual cells to refine
                   them.
                 </p>
                 <button
                   onClick={() => setShowGeneratedBanner(false)}
-                  className="text-teal-400 hover:text-teal-600 ml-4"
+                  className="text-brand-400 hover:text-brand-600 ml-4"
                 >
                   &#x2715;
                 </button>

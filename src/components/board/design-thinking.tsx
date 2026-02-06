@@ -72,7 +72,7 @@ export default function DesignThinking({
         <h2 className="text-lg font-bold text-stone-800 group-hover:text-stone-600">
           Design Thinking
         </h2>
-        <span className="text-xs bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full">
+        <span className="text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">
           Phase 2
         </span>
       </button>
@@ -95,7 +95,7 @@ export default function DesignThinking({
                 onAddWithAi("drivingQuestion", data.drivingQuestion, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#ffe4e6"
+              sectionColor="#DCCEC4"
             />
           </div>
 
@@ -111,7 +111,7 @@ export default function DesignThinking({
                 onAddWithAi("empathize", data.empathize, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#ffe4e6"
+              sectionColor="#DCCEC4"
             />
             <BoardCell
               cell={data.define}
@@ -121,7 +121,7 @@ export default function DesignThinking({
               onFixWithAi={(fb) => onFixWithAi("define", data.define, fb)}
               onAddWithAi={(desc) => onAddWithAi("define", data.define, desc)}
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#ffe4e6"
+              sectionColor="#DCCEC4"
             />
             <BoardCell
               cell={data.ideate}
@@ -131,7 +131,7 @@ export default function DesignThinking({
               onFixWithAi={(fb) => onFixWithAi("ideate", data.ideate, fb)}
               onAddWithAi={(desc) => onAddWithAi("ideate", data.ideate, desc)}
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#ffe4e6"
+              sectionColor="#DCCEC4"
             />
             <BoardCell
               cell={data.prototypeTest}
@@ -145,7 +145,7 @@ export default function DesignThinking({
                 onAddWithAi("prototypeTest", data.prototypeTest, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#ffe4e6"
+              sectionColor="#DCCEC4"
             />
           </div>
 
@@ -165,7 +165,7 @@ export default function DesignThinking({
                 onAddWithAi("milestoneEmpathize", data.milestoneEmpathize, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#fef3c7"
+              sectionColor="#C8D8CE"
             />
             <BoardCell
               cell={data.milestoneDefine}
@@ -181,7 +181,7 @@ export default function DesignThinking({
                 onAddWithAi("milestoneDefine", data.milestoneDefine, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#fef3c7"
+              sectionColor="#C8D8CE"
             />
             <BoardCell
               cell={data.milestoneIdeate}
@@ -197,7 +197,7 @@ export default function DesignThinking({
                 onAddWithAi("milestoneIdeate", data.milestoneIdeate, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#fef3c7"
+              sectionColor="#C8D8CE"
             />
             <BoardCell
               cell={data.milestonePrototypeTest}
@@ -221,7 +221,7 @@ export default function DesignThinking({
                 )
               }
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#fef3c7"
+              sectionColor="#C8D8CE"
             />
           </div>
 
@@ -252,7 +252,7 @@ export default function DesignThinking({
                           onFixWithAi("dt-additional-" + i, cell, fb)
                         }
                         onCrossCellDrop={onCrossCellDrop}
-                        sectionColor="#ffe4e6"
+                        sectionColor="#DCCEC4"
                       />
                       <button
                         onClick={() => removeAdditional(i)}
@@ -270,7 +270,7 @@ export default function DesignThinking({
           <div className="mt-3">
             <button
               onClick={addAdditional}
-              className="border-2 border-dashed border-rose-200 rounded-lg text-rose-400 hover:border-rose-400 hover:text-rose-600 transition-colors px-4 py-2 text-sm font-medium"
+              className="border-2 border-dashed border-brand-200 rounded-lg text-brand-400 hover:border-brand-400 hover:text-brand-600 transition-colors px-4 py-2 text-sm font-medium"
             >
               + Add Additional
             </button>

@@ -58,7 +58,7 @@ export default function DesignBoard({
           type="text"
           value={boardTitle}
           onChange={(e) => onTitleChange(e.target.value)}
-          className="text-2xl font-bold text-stone-800 bg-transparent border-b-2 border-transparent hover:border-stone-200 focus:border-teal-500 focus:outline-none px-1 py-0.5 w-full sm:w-auto"
+          className="text-2xl font-bold text-stone-800 bg-transparent border-b-2 border-transparent hover:border-stone-200 focus:border-brand-400 focus:outline-none px-1 py-0.5 w-full sm:w-auto"
           placeholder="Untitled Board"
           disabled={disabled}
         />
@@ -73,7 +73,7 @@ export default function DesignBoard({
               "font-semibold px-4 py-2 rounded-lg transition-colors text-sm flex items-center gap-1.5 " +
               (disabled || !canGenerateBoard
                 ? "bg-stone-300 text-stone-500 cursor-not-allowed"
-                : "bg-teal-600 hover:bg-teal-700 text-white")
+                : "bg-brand-800 hover:bg-brand-900 text-white")
             }
           >
             <span>&#x2728;</span> AI Generate Full Board
@@ -81,7 +81,7 @@ export default function DesignBoard({
         </div>
       </div>
       {disabled && (
-        <div className="bg-teal-50 border border-teal-200 rounded-lg px-4 py-3 mb-6 text-sm text-teal-800">
+        <div className="bg-brand-50 border border-brand-200 rounded-lg px-4 py-3 mb-6 text-sm text-brand-800">
           Please fill in your project context above (state, grade level, and at
           least one subject) to begin designing.
         </div>
