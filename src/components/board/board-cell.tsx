@@ -158,7 +158,7 @@ export default function BoardCell({
             {cell.label}
           </label>
           {cell.subtitle && (
-            <p className="text-xs text-stone-400 mt-0.5">{cell.subtitle}</p>
+            <p className="text-xs text-stone-500 mt-0.5">{cell.subtitle}</p>
           )}
         </div>
         <div className="relative" ref={menuRef}>
@@ -211,7 +211,7 @@ export default function BoardCell({
           value={cell.value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={() => setEditing(false)}
-          className="w-full px-3 pb-4 bg-transparent resize-none text-sm text-stone-800 placeholder:text-stone-300 focus:outline-none min-h-[60px]"
+          className="w-full px-3 py-2 mb-2 bg-transparent resize-none text-sm text-stone-800 placeholder:text-stone-300 focus:outline-none min-h-[60px]"
           placeholder={"Enter " + cell.label.toLowerCase() + "..."}
           rows={2}
         />

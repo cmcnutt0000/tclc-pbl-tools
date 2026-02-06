@@ -224,7 +224,7 @@ function CollapsibleSection({
                 setEditing(false);
               }
             }}
-            className="w-full text-sm text-stone-800 bg-white border border-teal-300 rounded px-2 py-1.5 resize-none focus:outline-none focus:ring-1 focus:ring-teal-300 min-h-[40px]"
+            className="w-full text-sm text-stone-800 bg-white border border-teal-300 rounded px-3 py-2 my-1 resize-none focus:outline-none focus:ring-1 focus:ring-teal-300 min-h-[40px]"
           />
         </div>
       );
@@ -265,7 +265,7 @@ function CollapsibleSection({
                 setEditing(false);
               }
             }}
-            className="w-full text-sm text-stone-800 bg-white border border-teal-300 rounded px-2 py-1.5 resize-none focus:outline-none focus:ring-1 focus:ring-teal-300 min-h-[60px]"
+            className="w-full text-sm text-stone-800 bg-white border border-teal-300 rounded px-3 py-2 my-1 resize-none focus:outline-none focus:ring-1 focus:ring-teal-300 min-h-[60px]"
           />
         </div>
       </div>
