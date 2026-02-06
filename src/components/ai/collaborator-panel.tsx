@@ -62,6 +62,168 @@ interface CollaboratorPanelProps {
 
 type ChangeStatus = "pending" | "accepted" | "rejected";
 
+/**
+ * Parse markdown content into bold-header sections for diffing.
+ * Returns array of { header, body } where header is the bold text.
+ */
+function parseBoldSections(
+  content: string,
+): Array<{ header: string; raw: string }> {
+  const lines = content.split("\n");
+  const sections: Array<{ header: string; rawLines: string[] }> = [];
+  let currentHeader = "";
+  let currentLines: string[] = [];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const isBulletHeader = /^[-*]\s+\*\*[^*]+\*\*/.test(trimmed);
+    const isStandaloneHeader =
+      /^\*\*[^*]+\*\*/.test(trimmed) && !trimmed.startsWith("**Note");
+
+    if (isBulletHeader || isStandaloneHeader) {
+      if (currentHeader || currentLines.length > 0) {
+        sections.push({
+          header: currentHeader,
+          rawLines: [...currentLines],
+        });
+      }
+      // Extract just the bold text as key
+      const boldMatch = trimmed.match(/\*\*([^*]+)\*\*/);
+      currentHeader = boldMatch ? boldMatch[1].trim() : trimmed;
+      currentLines = [line];
+    } else {
+      currentLines.push(line);
+    }
+  }
+  if (currentHeader || currentLines.length > 0) {
+    sections.push({ header: currentHeader, rawLines: [...currentLines] });
+  }
+
+  return sections.map((s) => ({
+    header: s.header,
+    raw: s.rawLines.join("\n"),
+  }));
+}
+
+/** Shows only the sections that differ between current and proposed */
+function ChangeDiffView({
+  currentValue,
+  proposedValue,
+  accepted,
+}: {
+  currentValue: string;
+  proposedValue: string;
+  accepted: boolean;
+}) {
+  const currentSections = parseBoldSections(currentValue);
+  const proposedSections = parseBoldSections(proposedValue);
+
+  // If we can't parse into sections (no bold headers), fall back to full display
+  if (currentSections.length <= 1 && proposedSections.length <= 1) {
+    return (
+      <div
+        className={
+          "text-sm rounded px-3 py-2 leading-relaxed " +
+          (accepted
+            ? "bg-green-50 text-green-800 border border-green-200"
+            : "bg-teal-50 text-teal-800")
+        }
+      >
+        <p
+          className={
+            "font-semibold mb-1 " +
+            (accepted ? "text-green-700" : "text-teal-700")
+          }
+        >
+          {accepted ? "\u2713 Applied:" : "Proposed:"}
+        </p>
+        <CollapsibleMarkdown content={proposedValue} />
+      </div>
+    );
+  }
+
+  // Build a map of current sections by header for comparison
+  const currentMap = new Map<string, string>();
+  for (const s of currentSections) {
+    if (s.header) currentMap.set(s.header, s.raw.trim());
+  }
+
+  // Find sections that are new or changed
+  const changedSections: Array<{
+    header: string;
+    raw: string;
+    isNew: boolean;
+  }> = [];
+  for (const s of proposedSections) {
+    if (!s.header) continue;
+    const currentRaw = currentMap.get(s.header);
+    if (currentRaw === undefined) {
+      changedSections.push({ header: s.header, raw: s.raw, isNew: true });
+    } else if (currentRaw !== s.raw.trim()) {
+      changedSections.push({ header: s.header, raw: s.raw, isNew: false });
+    }
+  }
+
+  // Find removed sections
+  const proposedHeaders = new Set(proposedSections.map((s) => s.header));
+  const removedSections = currentSections.filter(
+    (s) => s.header && !proposedHeaders.has(s.header),
+  );
+
+  if (changedSections.length === 0 && removedSections.length === 0) {
+    return (
+      <div className="text-sm text-stone-400 italic px-1 py-1">
+        No differences detected
+      </div>
+    );
+  }
+
+  const unchangedCount =
+    proposedSections.filter((s) => s.header).length - changedSections.length;
+
+  return (
+    <div className="space-y-1.5">
+      {changedSections.map((s, i) => (
+        <div
+          key={i}
+          className={
+            "text-sm rounded px-3 py-2 leading-relaxed " +
+            (accepted
+              ? "bg-green-50 text-green-800 border border-green-200"
+              : "bg-teal-50 text-teal-800")
+          }
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className={
+                "font-semibold " +
+                (accepted ? "text-green-700" : "text-teal-700")
+              }
+            >
+              {accepted ? "\u2713" : "\u2192"} {s.isNew ? "New:" : "Updated:"}
+            </span>
+          </div>
+          <CollapsibleMarkdown content={s.raw} defaultExpanded />
+        </div>
+      ))}
+      {removedSections.map((s, i) => (
+        <div
+          key={"rm-" + i}
+          className="text-sm rounded px-3 py-2 leading-relaxed bg-red-50 text-red-700 border border-red-100"
+        >
+          <span className="font-semibold">Removed:</span>{" "}
+          <span className="line-through">{s.header}</span>
+        </div>
+      ))}
+      {unchangedCount > 0 && (
+        <p className="text-xs text-stone-400 italic px-1">
+          {unchangedCount} section{unchangedCount > 1 ? "s" : ""} unchanged
+        </p>
+      )}
+    </div>
+  );
+}
+
 /** Parse the AI message into structured sections for clean display */
 function parseMessageSections(
   message: string,
@@ -383,39 +545,39 @@ export default function CollaboratorPanel({
 
                       {/* Change body */}
                       <div className="px-4 py-3 space-y-2">
-                        {/* Diff preview */}
-                        {change.currentValue && (
-                          <div className="text-sm text-stone-500 bg-stone-50 rounded px-3 py-2 leading-relaxed">
-                            <p className="font-semibold text-stone-600 mb-1">
-                              Current:
+                        {/* Diff view — only shows changed sections */}
+                        {change.currentValue ? (
+                          <ChangeDiffView
+                            currentValue={change.currentValue}
+                            proposedValue={change.proposedValue}
+                            accepted={status === "accepted"}
+                          />
+                        ) : (
+                          <div
+                            className={
+                              "text-sm rounded px-3 py-2 leading-relaxed " +
+                              (status === "accepted"
+                                ? "bg-green-50 text-green-800 border border-green-200"
+                                : "bg-teal-50 text-teal-800")
+                            }
+                          >
+                            <p
+                              className={
+                                "font-semibold mb-1 " +
+                                (status === "accepted"
+                                  ? "text-green-700"
+                                  : "text-teal-700")
+                              }
+                            >
+                              {status === "accepted"
+                                ? "\u2713 Applied:"
+                                : "New content:"}
                             </p>
                             <CollapsibleMarkdown
-                              content={change.currentValue}
+                              content={change.proposedValue}
                             />
                           </div>
                         )}
-                        <div
-                          className={
-                            "text-sm rounded px-3 py-2 leading-relaxed transition-colors " +
-                            (status === "accepted"
-                              ? "bg-green-50 text-green-800 border border-green-200"
-                              : "bg-teal-50 text-teal-800")
-                          }
-                        >
-                          <p
-                            className={
-                              "font-semibold mb-1 " +
-                              (status === "accepted"
-                                ? "text-green-700"
-                                : "text-teal-700")
-                            }
-                          >
-                            {status === "accepted"
-                              ? "\u2713 Applied:"
-                              : "Proposed:"}
-                          </p>
-                          <CollapsibleMarkdown content={change.proposedValue} />
-                        </div>
 
                         {/* Rationale */}
                         <p className="text-sm text-stone-500 italic leading-relaxed">
