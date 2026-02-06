@@ -24,6 +24,8 @@ interface DesignBoardProps {
     feedback: string,
   ) => Promise<void>;
   onGenerateBoard: () => void;
+  onGenerateTitle?: () => void;
+  titleLoading?: boolean;
   onGenerateAgenda?: (numDays: number) => void;
   agendaLoading?: boolean;
   boardComplete?: boolean;
@@ -31,6 +33,7 @@ interface DesignBoardProps {
   onTitleChange: (title: string) => void;
   disabled?: boolean;
   canGenerateBoard?: boolean;
+  canGenerateTitle?: boolean;
 }
 
 export default function DesignBoard({
@@ -43,6 +46,8 @@ export default function DesignBoard({
   onCrossCellDrop,
   onFixWithAiAgenda,
   onGenerateBoard,
+  onGenerateTitle,
+  titleLoading,
   onGenerateAgenda,
   agendaLoading,
   boardComplete,
@@ -50,18 +55,40 @@ export default function DesignBoard({
   onTitleChange,
   disabled,
   canGenerateBoard,
+  canGenerateTitle,
 }: DesignBoardProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <input
-          type="text"
-          value={boardTitle}
-          onChange={(e) => onTitleChange(e.target.value)}
-          className="text-2xl font-bold text-stone-800 bg-transparent border-b-2 border-transparent hover:border-stone-200 focus:border-brand-400 focus:outline-none px-1 py-0.5 w-full sm:w-auto"
-          placeholder="Untitled Board"
-          disabled={disabled}
-        />
+        <div className="flex items-center gap-2 w-full sm:w-auto group/title">
+          <input
+            type="text"
+            value={boardTitle}
+            onChange={(e) => onTitleChange(e.target.value)}
+            className="text-3xl font-bold text-stone-800 bg-transparent border-b-2 border-transparent hover:border-stone-200 focus:border-brand-400 focus:outline-none px-1 py-0.5 w-full sm:w-auto font-[var(--font-display)]"
+            placeholder="Untitled Board"
+            disabled={disabled}
+          />
+          {onGenerateTitle && (
+            <button
+              onClick={onGenerateTitle}
+              disabled={disabled || !canGenerateTitle || titleLoading}
+              title={
+                !canGenerateTitle
+                  ? "Fill in the Main Idea first"
+                  : "Generate a title with AI"
+              }
+              className={
+                "opacity-0 group-hover/title:opacity-100 transition-opacity shrink-0 text-xs px-2.5 py-1 rounded-full font-medium whitespace-nowrap " +
+                (disabled || !canGenerateTitle || titleLoading
+                  ? "bg-stone-200 text-stone-400 cursor-not-allowed"
+                  : "bg-amber-100 hover:bg-amber-200 text-amber-700")
+              }
+            >
+              {titleLoading ? "Generating..." : "\u2728 Generate Title"}
+            </button>
+          )}
+        </div>
         <div className="flex gap-2">
           <button
             onClick={() => onGenerateBoard()}

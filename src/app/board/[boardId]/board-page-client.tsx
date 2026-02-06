@@ -52,6 +52,7 @@ export default function BoardPageClient({
     useState<CollaboratorResponse | null>(null);
 
   const [agendaLoading, setAgendaLoading] = useState(false);
+  const [titleLoading, setTitleLoading] = useState(false);
 
   // Undo/redo history
   const historyRef = useRef<{
@@ -233,6 +234,52 @@ export default function BoardPageClient({
     handleContentChange(updateCellValue(content, activeCellId, text));
     setShowSuggestions(false);
   }
+  async function handleGenerateTitle() {
+    setTitleLoading(true);
+    try {
+      const mainIdea = content.initialPlanning.mainIdea.value;
+      const subjects = (context.subjects || []).join(", ");
+      const grade = context.gradeLevel || "";
+      const res = await fetch("/api/ai/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cellId: "boardTitle",
+          cell: {
+            id: "boardTitle",
+            label: "Board Title",
+            value: title,
+          },
+          content,
+          context,
+          feedback:
+            "Generate a short, creative, engaging project title (3-8 words) for a PBL board. " +
+            "The main idea is: " +
+            mainIdea +
+            ". " +
+            (subjects ? "Subjects: " + subjects + ". " : "") +
+            (grade ? "Grade level: " + grade + ". " : "") +
+            "Return ONLY the title text, no formatting, no quotes, no explanation.",
+        }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        alert("AI title generation failed. Please try again.");
+        return;
+      }
+      const suggestions = data.suggestions || [];
+      if (suggestions.length > 0) {
+        const newTitle = suggestions[0].text.replace(/^["']|["']$/g, "").trim();
+        setTitle(newTitle);
+        save(undefined, undefined, newTitle);
+      }
+    } catch {
+      alert("Unable to reach the AI service. Please try again.");
+    } finally {
+      setTitleLoading(false);
+    }
+  }
+
   async function handleGenerateBoard() {
     setVariationLoading(true);
     setShowGeneratedBanner(false);
@@ -617,6 +664,8 @@ export default function BoardPageClient({
             onCrossCellDrop={handleCrossCellDrop}
             onFixWithAiAgenda={handleFixWithAiAgenda}
             onGenerateBoard={handleGenerateBoard}
+            onGenerateTitle={handleGenerateTitle}
+            titleLoading={titleLoading}
             onGenerateAgenda={handleGenerateAgenda}
             agendaLoading={agendaLoading}
             boardComplete={boardComplete}
@@ -624,6 +673,7 @@ export default function BoardPageClient({
             onTitleChange={handleTitleChange}
             disabled={!contextComplete}
             canGenerateBoard={filledCellCount >= 2}
+            canGenerateTitle={!!content.initialPlanning.mainIdea.value.trim()}
           />
         </div>
 

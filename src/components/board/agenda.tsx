@@ -113,6 +113,8 @@ export default function Agenda({
 
   function removeEntry(index: number) {
     if (entries.length <= 1) return;
+    if (!confirm("Remove Session " + (index + 1) + "? This cannot be undone."))
+      return;
     onChange(entries.filter((_, i) => i !== index));
   }
 
@@ -126,12 +128,12 @@ export default function Agenda({
           <span className="text-[10px] text-stone-400 w-3">
             {collapsed ? "\u25B6" : "\u25BC"}
           </span>
-          <h2 className="text-lg font-bold text-stone-800 group-hover:text-stone-600">
+          <h2 className="font-bold text-stone-800 group-hover:text-stone-600">
             Agenda
           </h2>
         </button>
         <span className="text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">
-          Sessions
+          Phase 3
         </span>
         {onGenerateAgenda && (
           <>
@@ -200,7 +202,7 @@ export default function Agenda({
             <div
               key={entry.id}
               className="group/entry rounded-lg border border-stone-200 p-3 space-y-2"
-              style={{ backgroundColor: "#E3D9C7" }}
+              style={{ backgroundColor: "#C2D5D8" }}
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-stone-600">
@@ -209,9 +211,20 @@ export default function Agenda({
                 {entries.length > 1 && (
                   <button
                     onClick={() => removeEntry(i)}
-                    className="text-xs text-red-400 hover:text-red-600"
+                    className="opacity-0 group-hover/entry:opacity-100 transition-opacity w-5 h-5 flex items-center justify-center rounded-full text-stone-400 hover:bg-red-100 hover:text-red-600"
+                    title="Remove session"
                   >
-                    Remove
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 10 10"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                    >
+                      <line x1="1" y1="1" x2="9" y2="9" />
+                      <line x1="9" y1="1" x2="1" y2="9" />
+                    </svg>
                   </button>
                 )}
               </div>

@@ -69,10 +69,10 @@ export default function DesignThinking({
         <span className="text-[10px] text-stone-400 w-3">
           {collapsed ? "\u25B6" : "\u25BC"}
         </span>
-        <h2 className="text-lg font-bold text-stone-800 group-hover:text-stone-600">
+        <h2 className="font-bold text-stone-800 group-hover:text-stone-600">
           Design Thinking
         </h2>
-        <span className="text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">
+        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
           Phase 2
         </span>
       </button>
@@ -95,7 +95,7 @@ export default function DesignThinking({
                 onAddWithAi("drivingQuestion", data.drivingQuestion, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#DCCEC4"
+              sectionColor="#C8D8CE"
             />
           </div>
 
@@ -111,7 +111,7 @@ export default function DesignThinking({
                 onAddWithAi("empathize", data.empathize, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#DCCEC4"
+              sectionColor="#C8D8CE"
             />
             <BoardCell
               cell={data.define}
@@ -121,7 +121,7 @@ export default function DesignThinking({
               onFixWithAi={(fb) => onFixWithAi("define", data.define, fb)}
               onAddWithAi={(desc) => onAddWithAi("define", data.define, desc)}
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#DCCEC4"
+              sectionColor="#C8D8CE"
             />
             <BoardCell
               cell={data.ideate}
@@ -131,7 +131,7 @@ export default function DesignThinking({
               onFixWithAi={(fb) => onFixWithAi("ideate", data.ideate, fb)}
               onAddWithAi={(desc) => onAddWithAi("ideate", data.ideate, desc)}
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#DCCEC4"
+              sectionColor="#C8D8CE"
             />
             <BoardCell
               cell={data.prototypeTest}
@@ -145,7 +145,7 @@ export default function DesignThinking({
                 onAddWithAi("prototypeTest", data.prototypeTest, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#DCCEC4"
+              sectionColor="#C8D8CE"
             />
           </div>
 
@@ -252,7 +252,7 @@ export default function DesignThinking({
                           onFixWithAi("dt-additional-" + i, cell, fb)
                         }
                         onCrossCellDrop={onCrossCellDrop}
-                        sectionColor="#DCCEC4"
+                        sectionColor="#C8D8CE"
                       />
                       <button
                         onClick={() => removeAdditional(i)}
