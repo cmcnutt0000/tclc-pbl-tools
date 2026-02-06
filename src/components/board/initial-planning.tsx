@@ -86,7 +86,7 @@ export default function InitialPlanning({
             onClick={() => setConceptCollapsed(!conceptCollapsed)}
             className="flex items-center gap-1.5 mb-2 group"
           >
-            <span className="text-[10px] text-stone-400 w-3">
+            <span className="text-[10px] text-stone-600 w-3">
               {conceptCollapsed ? "\u25B6" : "\u25BC"}
             </span>
             <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide group-hover:text-stone-700">
@@ -167,7 +167,7 @@ export default function InitialPlanning({
             onClick={() => setStandardsCollapsed(!standardsCollapsed)}
             className="flex items-center gap-1.5 mb-2 group"
           >
-            <span className="text-[10px] text-stone-400 w-3">
+            <span className="text-[10px] text-stone-600 w-3">
               {standardsCollapsed ? "\u25B6" : "\u25BC"}
             </span>
             <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide group-hover:text-stone-700">
@@ -209,7 +209,7 @@ export default function InitialPlanning({
             onClick={() => setAdditionalCollapsed(!additionalCollapsed)}
             className="flex items-center gap-1.5 mb-2 group"
           >
-            <span className="text-[10px] text-stone-400 w-3">
+            <span className="text-[10px] text-stone-600 w-3">
               {additionalCollapsed ? "\u25B6" : "\u25BC"}
             </span>
             <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide group-hover:text-stone-700">

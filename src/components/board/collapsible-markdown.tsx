@@ -290,7 +290,7 @@ function CollapsibleSection({
               onDragStart(e, index);
             }}
             onDragEnd={onDragEnd}
-            className="flex-shrink-0 cursor-grab active:cursor-grabbing px-1 py-1.5 text-stone-300 hover:text-stone-500 select-none"
+            className="flex-shrink-0 cursor-grab active:cursor-grabbing px-1 py-1.5 text-stone-500 hover:text-stone-700 select-none"
             title="Drag to reorder"
             onDoubleClick={(e) => e.stopPropagation()}
           >
@@ -320,7 +320,7 @@ function CollapsibleSection({
         >
           {hasBody && (
             <span
-              className="text-[10px] text-stone-400 mt-1 flex-shrink-0 w-3 cursor-pointer"
+              className="text-[10px] text-stone-600 mt-1 flex-shrink-0 w-3 cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
                 setExpanded(!expanded);
@@ -340,7 +340,7 @@ function CollapsibleSection({
               onDelete(index);
             }}
             onDoubleClick={(e) => e.stopPropagation()}
-            className="opacity-0 group-hover/section:opacity-100 flex-shrink-0 px-1.5 py-1.5 text-stone-300 hover:text-red-500 transition-opacity"
+            className="opacity-0 group-hover/section:opacity-100 flex-shrink-0 px-1.5 py-1.5 text-stone-500 hover:text-red-500 transition-opacity"
             title="Remove section"
           >
             <svg

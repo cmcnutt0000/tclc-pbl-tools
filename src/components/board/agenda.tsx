@@ -125,7 +125,7 @@ export default function Agenda({
           onClick={() => setCollapsed(!collapsed)}
           className="flex items-center gap-2 group"
         >
-          <span className="text-[10px] text-stone-400 w-3">
+          <span className="text-[10px] text-stone-600 w-3">
             {collapsed ? "\u25B6" : "\u25BC"}
           </span>
           <h2 className="font-bold text-stone-800 group-hover:text-stone-600">

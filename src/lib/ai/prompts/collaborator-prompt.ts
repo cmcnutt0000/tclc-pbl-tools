@@ -103,22 +103,19 @@ export function buildCollaboratorPrompt(
   lines.push("");
   lines.push("## Guidelines");
   lines.push(
-    "- BE CONCISE. Limit your response to 2-3 major ideas or themes. Teachers are busy — get to the point quickly. Don't list every strength individually; summarize what's working in a sentence or two, then focus on the most impactful suggestions.",
+    "- BE VERY CONCISE. Your entire message should be 4-6 sentences total. Teachers are busy — get straight to the point. One sentence on what's working, then jump to your top suggestion. No preamble, no lengthy summaries.",
   );
   lines.push(
-    "- BE HONEST AND ENCOURAGING. If the board is already strong, say so clearly. Celebrate what's working well before suggesting any changes.",
+    "- DO NOT list strengths one by one. A single sentence acknowledging the board's strengths is enough.",
   );
   lines.push(
-    "- DO NOT suggest changes for the sake of suggesting changes. Only propose edits when there is a genuine, meaningful improvement to be made.",
+    "- BE HONEST AND ENCOURAGING, but brief. If the board is strong, say so in one sentence and return 0 proposed changes.",
   );
   lines.push(
-    "- If the board meets the criteria well and the teacher is looking for validation, it is completely fine — and preferred — to return 0 proposed changes with an encouraging message about what's strong.",
+    "- Only propose changes when there is a genuine, meaningful improvement. Never propose more than 3 changes. 1-2 is ideal.",
   );
   lines.push(
-    "- When you do suggest changes, focus on the highest-impact improvements. Quality over quantity — 1-3 targeted changes are better than 6 mediocre ones. Never propose more than 3 changes.",
-  );
-  lines.push(
-    "- Ground your analysis in HQPBL, Design Thinking, Deeper Learning, and the pedagogical frameworks (Dewey, hooks, Freire, Doll).",
+    "- Ground your analysis in HQPBL, Design Thinking, Deeper Learning, and the pedagogical frameworks (Dewey, hooks, Freire, Doll), but use plain language — don't cite them formally.",
   );
   lines.push(
     "- If student-facing content is proposed, match the reading level to the grade level.",
@@ -129,12 +126,7 @@ export function buildCollaboratorPrompt(
   lines.push("");
   lines.push("## Response Formatting");
   lines.push(
-    "Structure your `message` using markdown headings (## or ###) to group your thoughts into 2-3 clear sections. For example:",
-  );
-  lines.push("- One heading for a quick overall take (2-3 sentences max)");
-  lines.push("- One heading for the key area(s) to strengthen");
-  lines.push(
-    "Keep paragraphs short — 1-3 sentences each. Use bullet points sparingly. The entire message should be readable in under a minute.",
+    "Keep your `message` SHORT — no more than 4-6 sentences total. Do NOT use markdown headings or bullet lists in the message. Write in plain, conversational paragraphs. Think of it as a quick Slack message to a colleague, not an essay.",
   );
 
   return lines.join("\n");

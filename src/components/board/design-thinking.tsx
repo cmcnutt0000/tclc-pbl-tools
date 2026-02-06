@@ -68,7 +68,7 @@ export default function DesignThinking({
         onClick={() => setCollapsed(!collapsed)}
         className="flex items-center gap-2 mb-3 group"
       >
-        <span className="text-[10px] text-stone-400 w-3">
+        <span className="text-[10px] text-stone-600 w-3">
           {collapsed ? "\u25B6" : "\u25BC"}
         </span>
         <h2 className="font-bold text-stone-800 group-hover:text-stone-600">
@@ -107,7 +107,7 @@ export default function DesignThinking({
             onClick={() => setStepsCollapsed(!stepsCollapsed)}
             className="flex items-center gap-1.5 mb-2 group"
           >
-            <span className="text-[10px] text-stone-400 w-3">
+            <span className="text-[10px] text-stone-600 w-3">
               {stepsCollapsed ? "\u25B6" : "\u25BC"}
             </span>
             <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide group-hover:text-stone-700">
@@ -176,7 +176,7 @@ export default function DesignThinking({
             onClick={() => setMilestonesCollapsed(!milestonesCollapsed)}
             className="flex items-center gap-1.5 mb-2 group"
           >
-            <span className="text-[10px] text-stone-400 w-3">
+            <span className="text-[10px] text-stone-600 w-3">
               {milestonesCollapsed ? "\u25B6" : "\u25BC"}
             </span>
             <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide group-hover:text-stone-700">
@@ -278,7 +278,7 @@ export default function DesignThinking({
                 onClick={() => setAdditionalCollapsed(!additionalCollapsed)}
                 className="flex items-center gap-1.5 mb-2 group"
               >
-                <span className="text-[10px] text-stone-400 w-3">
+                <span className="text-[10px] text-stone-600 w-3">
                   {additionalCollapsed ? "\u25B6" : "\u25BC"}
                 </span>
                 <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide group-hover:text-stone-700">

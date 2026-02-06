@@ -617,8 +617,12 @@ export default function BoardPageClient({
             href="/"
             className="flex items-center gap-2 hover:text-brand-200 transition-colors"
           >
-            <img src="/images/justlighthouse.svg" alt="" className="h-8 w-8" />
-            <span className="text-lg font-[var(--font-display)] font-bold">
+            <img
+              src="/images/justlighthouse.svg"
+              alt=""
+              className="h-12 w-12"
+            />
+            <span className="text-2xl font-[var(--font-display)] font-bold">
               TCLC PBL Tools
             </span>
           </a>

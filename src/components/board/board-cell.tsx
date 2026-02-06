@@ -158,7 +158,7 @@ export default function BoardCell({
           className="cursor-text"
           title="Double-click to edit entire cell"
         >
-          <label className="text-xs font-semibold text-stone-700 uppercase tracking-wide flex items-center gap-1.5 cursor-text">
+          <label className="text-sm font-bold text-stone-900 uppercase tracking-wide flex items-center gap-1.5 cursor-text">
             {getCellIcon(cell.label) && (
               <span className="text-sm not-italic">
                 {getCellIcon(cell.label)}
@@ -167,7 +167,7 @@ export default function BoardCell({
             {cell.label}
           </label>
           {cell.subtitle && (
-            <p className="text-xs text-stone-500 mt-0.5">{cell.subtitle}</p>
+            <p className="text-xs text-stone-700 mt-0.5">{cell.subtitle}</p>
           )}
         </div>
         <div className="relative" ref={menuRef}>
@@ -238,7 +238,7 @@ export default function BoardCell({
             />
           ) : (
             <p
-              className="text-stone-300 cursor-text"
+              className="text-stone-800 cursor-text"
               onDoubleClick={() => setEditing(true)}
             >
               {"Enter " + cell.label.toLowerCase() + "..."}
