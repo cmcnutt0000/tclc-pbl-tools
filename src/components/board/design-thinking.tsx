@@ -72,7 +72,7 @@ export default function DesignThinking({
         <h2 className="font-bold text-stone-800 group-hover:text-stone-600">
           Design Thinking
         </h2>
-        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+        <span className="text-xs bg-green-800 text-green-100 px-2 py-0.5 rounded-full">
           Phase 2
         </span>
       </button>

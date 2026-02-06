@@ -11,12 +11,19 @@ export default async function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-brand-800 text-white shadow-md">
-        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">TCLC PBL Tools</h1>
-            <p className="text-brand-200 text-sm">
-              Third Coast Learning Collaborative
-            </p>
+        <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img
+              src="/images/justlighthouse.svg"
+              alt=""
+              className="h-10 w-10"
+            />
+            <div>
+              <h1 className="text-2xl font-bold">TCLC PBL Tools</h1>
+              <p className="text-brand-200 text-sm">
+                Third Coast Learning Collaborative
+              </p>
+            </div>
           </div>
           <CreateBoardButton />
         </div>

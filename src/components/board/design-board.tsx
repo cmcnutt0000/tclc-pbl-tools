@@ -60,12 +60,12 @@ export default function DesignBoard({
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <div className="flex items-center gap-2 w-full sm:w-auto group/title">
+        <div className="flex items-center gap-2 flex-1 min-w-0 group/title">
           <input
             type="text"
             value={boardTitle}
             onChange={(e) => onTitleChange(e.target.value)}
-            className="text-3xl font-bold text-stone-800 bg-transparent border-b-2 border-transparent hover:border-stone-200 focus:border-brand-400 focus:outline-none px-1 py-0.5 w-full sm:w-auto font-[var(--font-display)]"
+            className="text-3xl font-bold text-stone-800 bg-transparent border-b-2 border-transparent hover:border-stone-200 focus:border-brand-400 focus:outline-none px-1 py-0.5 min-w-0 flex-1 font-[var(--font-display)]"
             placeholder="Untitled Board"
             disabled={disabled}
           />

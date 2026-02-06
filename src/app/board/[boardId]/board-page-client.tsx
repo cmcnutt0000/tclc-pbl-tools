@@ -612,12 +612,15 @@ export default function BoardPageClient({
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <header className="bg-brand-800 text-white shadow-md shrink-0">
-        <div className="mx-auto px-6 py-3 flex items-center justify-between">
+        <div className="mx-auto px-6 py-2 flex items-center justify-between">
           <a
             href="/"
-            className="text-lg font-[var(--font-display)] font-bold hover:text-brand-200 transition-colors"
+            className="flex items-center gap-2 hover:text-brand-200 transition-colors"
           >
-            TCLC PBL Tools
+            <img src="/images/justlighthouse.svg" alt="" className="h-8 w-8" />
+            <span className="text-lg font-[var(--font-display)] font-bold">
+              TCLC PBL Tools
+            </span>
           </a>
         </div>
       </header>

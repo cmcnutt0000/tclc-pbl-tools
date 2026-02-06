@@ -74,7 +74,7 @@ export default function InitialPlanning({
     <section className="mb-8">
       <div className="flex items-center gap-3 mb-3">
         <h2 className="font-bold text-stone-800">Initial Planning</h2>
-        <span className="text-xs bg-brand-100 text-brand-700 px-2 py-0.5 rounded-full">
+        <span className="text-xs bg-brand-800 text-brand-100 px-2 py-0.5 rounded-full">
           Phase 1
         </span>
       </div>
