@@ -359,22 +359,13 @@ export default function CollaboratorPanel({
                       key={i}
                       className={
                         "rounded-lg border overflow-hidden transition-colors " +
-                        (status === "accepted"
-                          ? "border-green-200 bg-green-50/30"
-                          : status === "rejected"
-                            ? "border-stone-200 bg-stone-50 opacity-40"
-                            : "border-stone-200")
+                        (status === "rejected"
+                          ? "border-stone-200 bg-stone-50 opacity-40"
+                          : "border-stone-200")
                       }
                     >
                       {/* Change header */}
-                      <div
-                        className={
-                          "px-4 py-2 flex items-center justify-between " +
-                          (status === "accepted"
-                            ? "bg-green-100/50"
-                            : "bg-stone-50")
-                        }
-                      >
+                      <div className="px-4 py-2 flex items-center justify-between bg-stone-50">
                         <span className="text-sm font-semibold text-stone-800">
                           {change.cellLabel}
                         </span>
@@ -403,9 +394,25 @@ export default function CollaboratorPanel({
                             />
                           </div>
                         )}
-                        <div className="text-sm text-teal-800 bg-teal-50 rounded px-3 py-2 leading-relaxed">
-                          <p className="font-semibold text-teal-700 mb-1">
-                            Proposed:
+                        <div
+                          className={
+                            "text-sm rounded px-3 py-2 leading-relaxed transition-colors " +
+                            (status === "accepted"
+                              ? "bg-green-50 text-green-800 border border-green-200"
+                              : "bg-teal-50 text-teal-800")
+                          }
+                        >
+                          <p
+                            className={
+                              "font-semibold mb-1 " +
+                              (status === "accepted"
+                                ? "text-green-700"
+                                : "text-teal-700")
+                            }
+                          >
+                            {status === "accepted"
+                              ? "\u2713 Applied:"
+                              : "Proposed:"}
                           </p>
                           <CollapsibleMarkdown content={change.proposedValue} />
                         </div>
