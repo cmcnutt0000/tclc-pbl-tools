@@ -11,6 +11,7 @@ interface DesignBoardProps {
   onChange: (content: BoardContent) => void;
   onAiCellClick: (cellId: string, cell: CellContent) => void;
   onFixWithAi: (cellId: string, cell: CellContent, feedback: string) => void;
+  onAddWithAi: (cellId: string, cell: CellContent, description: string) => void;
   onCrossCellDrop?: (
     sourceCellId: string,
     rawLines: string[],
@@ -38,6 +39,7 @@ export default function DesignBoard({
   onChange,
   onAiCellClick,
   onFixWithAi,
+  onAddWithAi,
   onCrossCellDrop,
   onFixWithAiAgenda,
   onGenerateBoard,
@@ -90,6 +92,7 @@ export default function DesignBoard({
           onChange={(ip) => onChange({ ...content, initialPlanning: ip })}
           onAiClick={onAiCellClick}
           onFixWithAi={onFixWithAi}
+          onAddWithAi={onAddWithAi}
           onCrossCellDrop={onCrossCellDrop}
         />
         <DesignThinking
@@ -97,6 +100,7 @@ export default function DesignBoard({
           onChange={(dt) => onChange({ ...content, designThinking: dt })}
           onAiClick={onAiCellClick}
           onFixWithAi={onFixWithAi}
+          onAddWithAi={onAddWithAi}
           onCrossCellDrop={onCrossCellDrop}
         />
         <Agenda

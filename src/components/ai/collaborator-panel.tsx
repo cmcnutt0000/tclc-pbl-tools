@@ -105,6 +105,68 @@ function parseBoldSections(
   }));
 }
 
+/** A single diff entry for a changed section */
+function DiffSectionCard({
+  header,
+  newRaw,
+  oldRaw,
+  isNew,
+  accepted,
+}: {
+  header: string;
+  newRaw: string;
+  oldRaw?: string;
+  isNew: boolean;
+  accepted: boolean;
+}) {
+  const [expanded, setExpanded] = useState(false);
+
+  const colorClass = accepted
+    ? "bg-green-50 text-green-800 border border-green-200"
+    : "bg-teal-50 text-teal-800";
+  const labelColor = accepted ? "text-green-700" : "text-teal-700";
+
+  return (
+    <div
+      className={
+        "text-sm rounded overflow-hidden leading-relaxed " + colorClass
+      }
+    >
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full text-left px-3 py-2 flex items-center gap-2 hover:brightness-95 transition-all"
+      >
+        <span className="text-[10px] text-current/50 w-3 shrink-0">
+          {expanded ? "\u25BC" : "\u25B6"}
+        </span>
+        <span className={"font-semibold shrink-0 " + labelColor}>
+          {accepted ? "\u2713" : "\u2192"} {isNew ? "New:" : "Updated:"}
+        </span>
+        <span className="font-medium">{header}</span>
+      </button>
+      {expanded && (
+        <div className="px-3 pb-2 space-y-2">
+          {/* For updated sections, show what changed from */}
+          {!isNew && oldRaw && (
+            <div className="text-xs text-stone-500 bg-white/60 rounded px-2 py-1.5 border border-stone-200/50">
+              <p className="font-semibold text-stone-500 mb-0.5">Was:</p>
+              <div className="line-through opacity-70">
+                <CollapsibleMarkdown content={oldRaw} defaultExpanded />
+              </div>
+            </div>
+          )}
+          <div>
+            <p className={"font-semibold text-xs mb-0.5 " + labelColor}>
+              {isNew ? "Content:" : "Now:"}
+            </p>
+            <CollapsibleMarkdown content={newRaw} defaultExpanded />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** Shows only the sections that differ between current and proposed */
 function ChangeDiffView({
   currentValue,
@@ -148,10 +210,11 @@ function ChangeDiffView({
     if (s.header) currentMap.set(s.header, s.raw.trim());
   }
 
-  // Find sections that are new or changed
+  // Find sections that are new or changed, keeping the old value for updated ones
   const changedSections: Array<{
     header: string;
     raw: string;
+    oldRaw?: string;
     isNew: boolean;
   }> = [];
   for (const s of proposedSections) {
@@ -160,7 +223,12 @@ function ChangeDiffView({
     if (currentRaw === undefined) {
       changedSections.push({ header: s.header, raw: s.raw, isNew: true });
     } else if (currentRaw !== s.raw.trim()) {
-      changedSections.push({ header: s.header, raw: s.raw, isNew: false });
+      changedSections.push({
+        header: s.header,
+        raw: s.raw,
+        oldRaw: currentRaw,
+        isNew: false,
+      });
     }
   }
 
@@ -184,27 +252,14 @@ function ChangeDiffView({
   return (
     <div className="space-y-1.5">
       {changedSections.map((s, i) => (
-        <div
+        <DiffSectionCard
           key={i}
-          className={
-            "text-sm rounded px-3 py-2 leading-relaxed " +
-            (accepted
-              ? "bg-green-50 text-green-800 border border-green-200"
-              : "bg-teal-50 text-teal-800")
-          }
-        >
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className={
-                "font-semibold " +
-                (accepted ? "text-green-700" : "text-teal-700")
-              }
-            >
-              {accepted ? "\u2713" : "\u2192"} {s.isNew ? "New:" : "Updated:"}
-            </span>
-          </div>
-          <CollapsibleMarkdown content={s.raw} defaultExpanded />
-        </div>
+          header={s.header}
+          newRaw={s.raw}
+          oldRaw={s.oldRaw}
+          isNew={s.isNew}
+          accepted={accepted}
+        />
       ))}
       {removedSections.map((s, i) => (
         <div

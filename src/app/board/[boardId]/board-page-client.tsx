@@ -359,6 +359,46 @@ export default function BoardPageClient({
     }
   }
 
+  async function handleAddWithAi(
+    cellId: string,
+    cell: CellContent,
+    description: string,
+  ) {
+    const addFeedback =
+      "Add a NEW section to this cell about: " +
+      description +
+      ". Generate ONLY the new section content (one bold-header section with sub-bullets). Do NOT repeat any existing content.";
+    try {
+      const res = await fetch("/api/ai/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cellId,
+          cell,
+          content,
+          context,
+          feedback: addFeedback,
+        }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        alert("AI add failed. Please try again.");
+        return;
+      }
+      const suggestions = data.suggestions || [];
+      if (suggestions.length > 0) {
+        const currentValue = getCellValue(content, cellId);
+        const newValue = currentValue.trim()
+          ? currentValue.trimEnd() + "\n" + suggestions[0].text
+          : suggestions[0].text;
+        handleContentChange(updateCellValue(content, cellId, newValue));
+      }
+    } catch (err) {
+      console.error("Add with AI failed:", err);
+      alert("Unable to reach the AI service. Please try again.");
+    }
+  }
+
   async function handleCollaborate(userMessage: string) {
     setCollaboratorLoading(true);
     setCollaboratorResponse(null);
@@ -573,6 +613,7 @@ export default function BoardPageClient({
             onChange={handleContentChange}
             onAiCellClick={handleAiCellClick}
             onFixWithAi={handleFixWithAi}
+            onAddWithAi={handleAddWithAi}
             onCrossCellDrop={handleCrossCellDrop}
             onFixWithAiAgenda={handleFixWithAiAgenda}
             onGenerateBoard={handleGenerateBoard}

@@ -13,6 +13,7 @@ interface InitialPlanningProps {
   onChange: (data: InitialPlanningType) => void;
   onAiClick: (cellId: string, cell: CellContent) => void;
   onFixWithAi: (cellId: string, cell: CellContent, feedback: string) => void;
+  onAddWithAi: (cellId: string, cell: CellContent, description: string) => void;
   onCrossCellDrop?: (
     sourceCellId: string,
     rawLines: string[],
@@ -26,6 +27,7 @@ export default function InitialPlanning({
   onChange,
   onAiClick,
   onFixWithAi,
+  onAddWithAi,
   onCrossCellDrop,
 }: InitialPlanningProps) {
   const [conceptCollapsed, setConceptCollapsed] = useState(false);
@@ -99,6 +101,9 @@ export default function InitialPlanning({
                 onChange={(v) => updateCell("mainIdea", v)}
                 onAiClick={() => onAiClick("mainIdea", data.mainIdea)}
                 onFixWithAi={(fb) => onFixWithAi("mainIdea", data.mainIdea, fb)}
+                onAddWithAi={(desc) =>
+                  onAddWithAi("mainIdea", data.mainIdea, desc)
+                }
                 onCrossCellDrop={onCrossCellDrop}
                 sectionColor="#dbeafe"
               />
@@ -109,6 +114,9 @@ export default function InitialPlanning({
                 onAiClick={() => onAiClick("noticeReflect", data.noticeReflect)}
                 onFixWithAi={(fb) =>
                   onFixWithAi("noticeReflect", data.noticeReflect, fb)
+                }
+                onAddWithAi={(desc) =>
+                  onAddWithAi("noticeReflect", data.noticeReflect, desc)
                 }
                 onCrossCellDrop={onCrossCellDrop}
                 sectionColor="#dbeafe"
@@ -123,6 +131,9 @@ export default function InitialPlanning({
                 onFixWithAi={(fb) =>
                   onFixWithAi("openingActivity", data.openingActivity, fb)
                 }
+                onAddWithAi={(desc) =>
+                  onAddWithAi("openingActivity", data.openingActivity, desc)
+                }
                 onCrossCellDrop={onCrossCellDrop}
                 sectionColor="#dbeafe"
               />
@@ -135,6 +146,9 @@ export default function InitialPlanning({
                 }
                 onFixWithAi={(fb) =>
                   onFixWithAi("communityPartners", data.communityPartners, fb)
+                }
+                onAddWithAi={(desc) =>
+                  onAddWithAi("communityPartners", data.communityPartners, desc)
                 }
                 onCrossCellDrop={onCrossCellDrop}
                 sectionColor="#dbeafe"
@@ -169,6 +183,9 @@ export default function InitialPlanning({
                     onAiClick={() => onAiClick("standards-" + subject, stdCell)}
                     onFixWithAi={(fb) =>
                       onFixWithAi("standards-" + subject, stdCell, fb)
+                    }
+                    onAddWithAi={(desc) =>
+                      onAddWithAi("standards-" + subject, stdCell, desc)
                     }
                     onCrossCellDrop={onCrossCellDrop}
                     sectionColor="#dbeafe"

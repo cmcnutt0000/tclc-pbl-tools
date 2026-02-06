@@ -33,6 +33,7 @@ interface BoardCellProps {
   onChange: (value: string) => void;
   onAiClick: () => void;
   onFixWithAi?: (feedback: string) => void;
+  onAddWithAi?: (description: string) => void;
   onCrossCellDrop?: (
     sourceCellId: string,
     rawLines: string[],
@@ -48,6 +49,7 @@ export default function BoardCell({
   onChange,
   onAiClick,
   onFixWithAi,
+  onAddWithAi,
   onCrossCellDrop,
   sectionColor,
 }: BoardCellProps) {
@@ -56,6 +58,9 @@ export default function BoardCell({
   const [showFixInput, setShowFixInput] = useState(false);
   const [fixFeedback, setFixFeedback] = useState("");
   const [fixLoading, setFixLoading] = useState(false);
+  const [showAddInput, setShowAddInput] = useState(false);
+  const [addDescription, setAddDescription] = useState("");
+  const [addLoading, setAddLoading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -184,6 +189,17 @@ export default function BoardCell({
               >
                 &#x270F;&#xFE0F; Improve current
               </button>
+              {onAddWithAi && (
+                <button
+                  onClick={() => {
+                    setAiMenu(false);
+                    setShowAddInput(true);
+                  }}
+                  className="w-full text-left text-xs px-3 py-1.5 hover:bg-stone-50 text-stone-700"
+                >
+                  &#x2795; Add section
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -272,6 +288,53 @@ export default function BoardCell({
                   setFixFeedback("");
                 }}
                 disabled={fixLoading}
+                className="text-xs text-stone-400 hover:text-stone-600"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAddInput && onAddWithAi && (
+        <div className="px-3 pb-2">
+          <div className="space-y-2">
+            <textarea
+              value={addDescription}
+              onChange={(e) => setAddDescription(e.target.value)}
+              placeholder="Describe what to add (e.g. 'a journaling activity')"
+              className="w-full text-xs border border-stone-200 rounded px-2 py-1.5 resize-none focus:outline-none focus:border-teal-400 bg-white"
+              rows={2}
+              disabled={addLoading}
+              autoFocus
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={async () => {
+                  if (!addDescription.trim()) return;
+                  setAddLoading(true);
+                  await onAddWithAi(addDescription);
+                  setAddLoading(false);
+                  setShowAddInput(false);
+                  setAddDescription("");
+                }}
+                disabled={addLoading || !addDescription.trim()}
+                className={
+                  "text-xs px-2 py-1 rounded font-medium " +
+                  (addLoading || !addDescription.trim()
+                    ? "bg-stone-200 text-stone-400"
+                    : "bg-teal-600 hover:bg-teal-700 text-white")
+                }
+              >
+                {addLoading ? "Adding..." : "\u2795 Add"}
+              </button>
+              <button
+                onClick={() => {
+                  setShowAddInput(false);
+                  setAddDescription("");
+                }}
+                disabled={addLoading}
                 className="text-xs text-stone-400 hover:text-stone-600"
               >
                 Cancel

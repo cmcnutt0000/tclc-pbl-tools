@@ -13,6 +13,7 @@ interface DesignThinkingProps {
   onChange: (data: DesignThinkingType) => void;
   onAiClick: (cellId: string, cell: CellContent) => void;
   onFixWithAi: (cellId: string, cell: CellContent, feedback: string) => void;
+  onAddWithAi: (cellId: string, cell: CellContent, description: string) => void;
   onCrossCellDrop?: (
     sourceCellId: string,
     rawLines: string[],
@@ -26,6 +27,7 @@ export default function DesignThinking({
   onChange,
   onAiClick,
   onFixWithAi,
+  onAddWithAi,
   onCrossCellDrop,
 }: DesignThinkingProps) {
   const [collapsed, setCollapsed] = useState(false);
@@ -89,6 +91,9 @@ export default function DesignThinking({
               onFixWithAi={(fb) =>
                 onFixWithAi("drivingQuestion", data.drivingQuestion, fb)
               }
+              onAddWithAi={(desc) =>
+                onAddWithAi("drivingQuestion", data.drivingQuestion, desc)
+              }
               onCrossCellDrop={onCrossCellDrop}
               sectionColor="#ffe4e6"
             />
@@ -102,6 +107,9 @@ export default function DesignThinking({
               onChange={(v) => updateCell("empathize", v)}
               onAiClick={() => onAiClick("empathize", data.empathize)}
               onFixWithAi={(fb) => onFixWithAi("empathize", data.empathize, fb)}
+              onAddWithAi={(desc) =>
+                onAddWithAi("empathize", data.empathize, desc)
+              }
               onCrossCellDrop={onCrossCellDrop}
               sectionColor="#ffe4e6"
             />
@@ -111,6 +119,7 @@ export default function DesignThinking({
               onChange={(v) => updateCell("define", v)}
               onAiClick={() => onAiClick("define", data.define)}
               onFixWithAi={(fb) => onFixWithAi("define", data.define, fb)}
+              onAddWithAi={(desc) => onAddWithAi("define", data.define, desc)}
               onCrossCellDrop={onCrossCellDrop}
               sectionColor="#ffe4e6"
             />
@@ -120,6 +129,7 @@ export default function DesignThinking({
               onChange={(v) => updateCell("ideate", v)}
               onAiClick={() => onAiClick("ideate", data.ideate)}
               onFixWithAi={(fb) => onFixWithAi("ideate", data.ideate, fb)}
+              onAddWithAi={(desc) => onAddWithAi("ideate", data.ideate, desc)}
               onCrossCellDrop={onCrossCellDrop}
               sectionColor="#ffe4e6"
             />
@@ -130,6 +140,9 @@ export default function DesignThinking({
               onAiClick={() => onAiClick("prototypeTest", data.prototypeTest)}
               onFixWithAi={(fb) =>
                 onFixWithAi("prototypeTest", data.prototypeTest, fb)
+              }
+              onAddWithAi={(desc) =>
+                onAddWithAi("prototypeTest", data.prototypeTest, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
               sectionColor="#ffe4e6"
@@ -148,6 +161,9 @@ export default function DesignThinking({
               onFixWithAi={(fb) =>
                 onFixWithAi("milestoneEmpathize", data.milestoneEmpathize, fb)
               }
+              onAddWithAi={(desc) =>
+                onAddWithAi("milestoneEmpathize", data.milestoneEmpathize, desc)
+              }
               onCrossCellDrop={onCrossCellDrop}
               sectionColor="#fef3c7"
             />
@@ -161,6 +177,9 @@ export default function DesignThinking({
               onFixWithAi={(fb) =>
                 onFixWithAi("milestoneDefine", data.milestoneDefine, fb)
               }
+              onAddWithAi={(desc) =>
+                onAddWithAi("milestoneDefine", data.milestoneDefine, desc)
+              }
               onCrossCellDrop={onCrossCellDrop}
               sectionColor="#fef3c7"
             />
@@ -173,6 +192,9 @@ export default function DesignThinking({
               }
               onFixWithAi={(fb) =>
                 onFixWithAi("milestoneIdeate", data.milestoneIdeate, fb)
+              }
+              onAddWithAi={(desc) =>
+                onAddWithAi("milestoneIdeate", data.milestoneIdeate, desc)
               }
               onCrossCellDrop={onCrossCellDrop}
               sectionColor="#fef3c7"
@@ -189,6 +211,13 @@ export default function DesignThinking({
                   "milestonePrototypeTest",
                   data.milestonePrototypeTest,
                   fb,
+                )
+              }
+              onAddWithAi={(desc) =>
+                onAddWithAi(
+                  "milestonePrototypeTest",
+                  data.milestonePrototypeTest,
+                  desc,
                 )
               }
               onCrossCellDrop={onCrossCellDrop}
