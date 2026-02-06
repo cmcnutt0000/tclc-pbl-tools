@@ -31,7 +31,7 @@ function AiImproveButton({
     return (
       <button
         onClick={() => setShowInput(true)}
-        className="text-[10px] bg-amber-100 hover:bg-amber-200 text-amber-700 px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap"
+        className="opacity-0 group-hover/entry:opacity-100 transition-opacity text-[10px] bg-amber-100 hover:bg-amber-200 text-amber-700 px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap"
         title="Improve with AI"
       >
         &#x2728; AI
@@ -199,7 +199,7 @@ export default function Agenda({
           {entries.map((entry, i) => (
             <div
               key={entry.id}
-              className="bg-amber-50 rounded-lg border border-stone-200 p-3 space-y-2"
+              className="group/entry bg-amber-50 rounded-lg border border-stone-200 p-3 space-y-2"
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-stone-600">

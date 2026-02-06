@@ -40,6 +40,7 @@ export interface DesignThinking {
   milestoneIdeate: CellContent;
   prototypeTest: CellContent;
   milestonePrototypeTest: CellContent;
+  additional: CellContent[];
 }
 
 export interface BoardContent {
@@ -153,6 +154,7 @@ export function createEmptyBoardContent(): BoardContent {
         "Milestone: Prototype & Test",
         "Final deliverable and presentation to an authentic audience",
       ),
+      additional: [],
     },
     agenda: [createEmptyAgendaEntry()],
   };

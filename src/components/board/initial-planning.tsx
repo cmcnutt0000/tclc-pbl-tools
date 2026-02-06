@@ -92,7 +92,7 @@ export default function InitialPlanning({
             </h3>
           </button>
           {!conceptCollapsed && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <BoardCell
                 cell={data.mainIdea}
                 cellId="mainIdea"
@@ -157,7 +157,7 @@ export default function InitialPlanning({
             </h3>
           </button>
           {!standardsCollapsed && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {data.standards.map((stdCell, i) => {
                 const subject = stdCell.label.replace("Standards: ", "");
                 return (
@@ -195,7 +195,7 @@ export default function InitialPlanning({
             </h3>
           </button>
           {!additionalCollapsed && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {data.additional.map((cell, i) => (
                 <div key={cell.id} className="relative">
                   <BoardCell
@@ -223,7 +223,7 @@ export default function InitialPlanning({
           onClick={addColumn}
           className="border-2 border-dashed border-blue-200 rounded-lg text-blue-400 hover:border-blue-400 hover:text-blue-600 transition-colors px-4 py-2 text-sm font-medium"
         >
-          + Add Column
+          + Add Additional
         </button>
       </div>
     </section>

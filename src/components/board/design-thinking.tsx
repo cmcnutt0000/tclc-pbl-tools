@@ -5,6 +5,7 @@ import type {
   DesignThinking as DesignThinkingType,
   CellContent,
 } from "@/types/board";
+import { createEmptyCell } from "@/types/board";
 import BoardCell from "./board-cell";
 
 interface DesignThinkingProps {
@@ -28,9 +29,33 @@ export default function DesignThinking({
   onCrossCellDrop,
 }: DesignThinkingProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [additionalCollapsed, setAdditionalCollapsed] = useState(false);
 
   function updateCell(key: keyof DesignThinkingType, value: string) {
     onChange({ ...data, [key]: { ...data[key], value } });
+  }
+
+  function updateAdditional(index: number, value: string) {
+    const updated = [...(data.additional || [])];
+    updated[index] = { ...updated[index], value };
+    onChange({ ...data, additional: updated });
+  }
+
+  function addAdditional() {
+    onChange({
+      ...data,
+      additional: [
+        ...(data.additional || []),
+        createEmptyCell("Additional", "Custom design thinking column"),
+      ],
+    });
+  }
+
+  function removeAdditional(index: number) {
+    onChange({
+      ...data,
+      additional: (data.additional || []).filter((_, i) => i !== index),
+    });
   }
 
   return (
@@ -70,7 +95,7 @@ export default function DesignThinking({
           </div>
 
           {/* Steps row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mb-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-3">
             <BoardCell
               cell={data.empathize}
               cellId="empathize"
@@ -112,7 +137,7 @@ export default function DesignThinking({
           </div>
 
           {/* Milestones row — aligned horizontally */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             <BoardCell
               cell={data.milestoneEmpathize}
               cellId="milestoneEmpathize"
@@ -169,6 +194,57 @@ export default function DesignThinking({
               onCrossCellDrop={onCrossCellDrop}
               sectionColor="#fef3c7"
             />
+          </div>
+
+          {/* Additional columns */}
+          {data.additional && data.additional.length > 0 && (
+            <div className="mt-4">
+              <button
+                onClick={() => setAdditionalCollapsed(!additionalCollapsed)}
+                className="flex items-center gap-1.5 mb-2 group"
+              >
+                <span className="text-[10px] text-stone-400 w-3">
+                  {additionalCollapsed ? "\u25B6" : "\u25BC"}
+                </span>
+                <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide group-hover:text-stone-700">
+                  Additional
+                </h3>
+              </button>
+              {!additionalCollapsed && (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                  {data.additional.map((cell, i) => (
+                    <div key={cell.id} className="relative">
+                      <BoardCell
+                        cell={cell}
+                        cellId={"dt-additional-" + i}
+                        onChange={(v) => updateAdditional(i, v)}
+                        onAiClick={() => onAiClick("dt-additional-" + i, cell)}
+                        onFixWithAi={(fb) =>
+                          onFixWithAi("dt-additional-" + i, cell, fb)
+                        }
+                        onCrossCellDrop={onCrossCellDrop}
+                        sectionColor="#ffe4e6"
+                      />
+                      <button
+                        onClick={() => removeAdditional(i)}
+                        className="absolute -top-2 -right-2 w-5 h-5 bg-red-100 hover:bg-red-200 text-red-600 rounded-full text-xs flex items-center justify-center"
+                      >
+                        x
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="mt-3">
+            <button
+              onClick={addAdditional}
+              className="border-2 border-dashed border-rose-200 rounded-lg text-rose-400 hover:border-rose-400 hover:text-rose-600 transition-colors px-4 py-2 text-sm font-medium"
+            >
+              + Add Additional
+            </button>
           </div>
         </>
       )}

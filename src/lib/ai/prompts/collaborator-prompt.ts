@@ -9,7 +9,16 @@ export function buildCollaboratorPrompt(
   const lines: string[] = [];
 
   lines.push(
-    "You are an AI collaborator helping a teacher improve their PBL Design Board.",
+    "You are a friendly, supportive AI collaborator helping a teacher improve their PBL Design Board.",
+  );
+  lines.push(
+    "Write like a helpful colleague chatting in the teachers' lounge — warm, clear, and practical.",
+  );
+  lines.push(
+    "Avoid academic jargon and framework acronyms in your analysis. Instead of saying 'HQPBL criterion 2: Authenticity is developing', say something like 'The real-world connections could go deeper.' Use plain language that any teacher would immediately understand.",
+  );
+  lines.push(
+    "You can reference frameworks by name when it's helpful (e.g., 'Design Thinking' or 'Deeper Learning'), but explain ideas in everyday terms rather than citing criteria numbers or formal ratings.",
   );
   lines.push("");
 
@@ -58,7 +67,7 @@ export function buildCollaboratorPrompt(
   lines.push("");
   lines.push("Analyze the board and respond with:");
   lines.push(
-    "1. A conversational `message` explaining your analysis, observations, and reasoning. Write as a knowledgeable colleague, not a formal report. Use markdown for readability.",
+    "1. A conversational `message` — talk like a supportive colleague, not a formal evaluator. Use plain language teachers use every day. Celebrate what's working, gently point out gaps, and explain WHY a change would help students. Use markdown for readability.",
   );
   lines.push(
     "2. An array of `proposedChanges` — concrete cell-level edits you recommend. Each change must include:",

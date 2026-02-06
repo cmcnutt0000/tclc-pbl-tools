@@ -735,6 +735,10 @@ function getCellValue(content: BoardContent, cellId: string): string {
     const idx = parseInt(cellId.split("-")[1]);
     return content.initialPlanning.additional[idx]?.value || "";
   }
+  if (cellId.startsWith("dt-additional-")) {
+    const idx = parseInt(cellId.split("-")[2]);
+    return (content.designThinking.additional || [])[idx]?.value || "";
+  }
   const dtKeys = [
     "drivingQuestion",
     "empathize",
@@ -787,6 +791,13 @@ function updateCellValue(
     const additional = [...nc.initialPlanning.additional];
     additional[idx] = { ...additional[idx], value };
     nc.initialPlanning = { ...nc.initialPlanning, additional };
+    return nc;
+  }
+  if (cellId.startsWith("dt-additional-")) {
+    const idx = parseInt(cellId.split("-")[2]);
+    const additional = [...(nc.designThinking.additional || [])];
+    additional[idx] = { ...additional[idx], value };
+    nc.designThinking = { ...nc.designThinking, additional };
     return nc;
   }
   const dtKeys = [

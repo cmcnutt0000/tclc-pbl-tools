@@ -4,6 +4,29 @@ import { useState, useRef, useEffect } from "react";
 import type { CellContent } from "@/types/board";
 import CollapsibleMarkdown from "./collapsible-markdown";
 
+const CELL_ICONS: Record<string, string> = {
+  "Main Idea / Topic": "\uD83C\uDFAF",
+  "Notice & Reflect": "\uD83D\uDD0D",
+  "Opening Activity": "\uD83C\uDFAC",
+  "Community Partners": "\uD83E\uDD1D",
+  "Driving Question": "\u2753",
+  Empathize: "\u2764\uFE0F",
+  Define: "\uD83C\uDFAF",
+  Ideate: "\uD83D\uDCA1",
+  "Prototype & Test": "\uD83D\uDD27",
+  "Milestone: Empathize": "\uD83C\uDFC1",
+  "Milestone: Define": "\uD83C\uDFC1",
+  "Milestone: Ideate": "\uD83C\uDFC1",
+  "Milestone: Prototype & Test": "\uD83C\uDFC1",
+};
+
+function getCellIcon(label: string): string {
+  if (CELL_ICONS[label]) return CELL_ICONS[label];
+  if (label.startsWith("Standards")) return "\uD83D\uDCDA";
+  if (label.startsWith("Milestone")) return "\uD83C\uDFC1";
+  return "";
+}
+
 interface BoardCellProps {
   cell: CellContent;
   cellId: string;
@@ -115,9 +138,14 @@ export default function BoardCell({
       onDragLeave={handleCellDragLeave}
       onDrop={handleCellDrop}
     >
-      <div className="px-3 pt-2 pb-1 flex items-start justify-between">
+      <div className="px-3 pt-3 pb-1.5 flex items-start justify-between">
         <div>
-          <label className="text-xs font-semibold text-stone-700 uppercase tracking-wide">
+          <label className="text-xs font-semibold text-stone-700 uppercase tracking-wide flex items-center gap-1.5">
+            {getCellIcon(cell.label) && (
+              <span className="text-sm not-italic">
+                {getCellIcon(cell.label)}
+              </span>
+            )}
             {cell.label}
           </label>
           {cell.subtitle && (
@@ -163,14 +191,14 @@ export default function BoardCell({
           value={cell.value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={() => setEditing(false)}
-          className="w-full px-3 pb-3 bg-transparent resize-none text-sm text-stone-800 placeholder:text-stone-300 focus:outline-none min-h-[60px]"
+          className="w-full px-3 pb-4 bg-transparent resize-none text-sm text-stone-800 placeholder:text-stone-300 focus:outline-none min-h-[60px]"
           placeholder={"Enter " + cell.label.toLowerCase() + "..."}
           rows={2}
         />
       ) : (
         <div
           onDoubleClick={() => setEditing(true)}
-          className="w-full px-3 pb-3 text-sm text-stone-800 min-h-[60px]"
+          className="w-full px-3 pb-4 text-sm text-stone-800 min-h-[60px]"
           title="Double-click to edit"
         >
           {cell.value ? (
@@ -185,6 +213,21 @@ export default function BoardCell({
               {"Enter " + cell.label.toLowerCase() + "..."}
             </p>
           )}
+        </div>
+      )}
+
+      {/* Add section button */}
+      {!editing && cell.value && (
+        <div className="px-3 pb-2">
+          <button
+            onClick={() => {
+              const newSection = "\n- **New Section**\n  - Add details here";
+              onChange(cell.value.trimEnd() + newSection);
+            }}
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-stone-400 hover:text-teal-600 font-medium flex items-center gap-1"
+          >
+            + Add section
+          </button>
         </div>
       )}
 

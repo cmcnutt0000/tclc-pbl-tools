@@ -53,6 +53,13 @@ export default async function BoardPage({ params }: Props) {
         "Local organizations, businesses, or individuals who could partner on this project",
       );
     }
+    // Ensure additional arrays exist
+    if (raw.initialPlanning && !raw.initialPlanning.additional) {
+      raw.initialPlanning.additional = [];
+    }
+    if (raw.designThinking && !raw.designThinking.additional) {
+      raw.designThinking.additional = [];
+    }
     content = raw as BoardContent;
   } catch {
     content = createEmptyBoardContent();

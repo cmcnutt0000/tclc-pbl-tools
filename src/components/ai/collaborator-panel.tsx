@@ -29,6 +29,13 @@ const STARTERS = [
     message:
       "Analyze the scope of this project. Which activities could be condensed or expanded? How could milestones be simplified or enriched? Propose changes that would make the project more realistic for the available time.",
   },
+  {
+    id: "research",
+    icon: "\uD83D\uDCDA",
+    label: "How does this align with progressive education research?",
+    message:
+      "Analyze this board through the lens of progressive education research. Reference specific thinkers and frameworks — John Dewey's experiential learning, Paulo Freire's critical pedagogy, bell hooks' engaged pedagogy, William Doll's post-modern curriculum theory, and Deeper Learning research. Where does this project already embody these principles? Where could it go deeper? Propose specific changes grounded in the research. Use academic language and cite the scholars directly.",
+  },
 ];
 
 const LOADING_MESSAGES = [
