@@ -285,8 +285,8 @@ export default function CollaboratorPanel({
               {LOADING_MESSAGES[loadingMsgIndex]}
             </p>
             <p className="text-xs text-stone-400 mt-2">
-              This may take a minute or two \u2014 we{"'"}re doing a deep
-              analysis of your entire board.
+              This may take a minute or two {"\u2014"} we{"\u2019"}re doing a
+              deep analysis of your entire board.
             </p>
           </div>
         )}
@@ -398,14 +398,14 @@ export default function CollaboratorPanel({
                       <div className="px-4 py-3 space-y-2">
                         {/* Diff preview */}
                         {change.currentValue && (
-                          <div className="text-xs text-stone-400 bg-stone-50 rounded px-3 py-2">
-                            <span className="font-semibold text-stone-500">
+                          <div className="text-sm text-stone-500 bg-stone-50 rounded px-3 py-2 leading-relaxed">
+                            <span className="font-semibold text-stone-600">
                               Current:
                             </span>{" "}
                             {truncate(change.currentValue, 150)}
                           </div>
                         )}
-                        <div className="text-xs text-teal-800 bg-teal-50 rounded px-3 py-2">
+                        <div className="text-sm text-teal-800 bg-teal-50 rounded px-3 py-2 leading-relaxed">
                           <span className="font-semibold text-teal-700">
                             Proposed:
                           </span>{" "}
@@ -413,7 +413,7 @@ export default function CollaboratorPanel({
                         </div>
 
                         {/* Rationale */}
-                        <p className="text-xs text-stone-500 italic leading-relaxed">
+                        <p className="text-sm text-stone-500 italic leading-relaxed">
                           {change.rationale}
                         </p>
 
@@ -422,13 +422,13 @@ export default function CollaboratorPanel({
                           <div className="flex gap-2 pt-1">
                             <button
                               onClick={() => handleAccept(i, change)}
-                              className="text-xs font-medium px-3 py-1.5 rounded bg-teal-600 hover:bg-teal-700 text-white transition-colors"
+                              className="text-sm font-medium px-3 py-1.5 rounded bg-teal-600 hover:bg-teal-700 text-white transition-colors"
                             >
                               {"\u2713"} Accept
                             </button>
                             <button
                               onClick={() => handleReject(i)}
-                              className="text-xs font-medium px-3 py-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-600 transition-colors"
+                              className="text-sm font-medium px-3 py-1.5 rounded bg-stone-100 hover:bg-stone-200 text-stone-600 transition-colors"
                             >
                               {"\u2717"} Dismiss
                             </button>
@@ -444,7 +444,7 @@ export default function CollaboratorPanel({
             {response.proposedChanges.length === 0 && (
               <div className="bg-green-50 border border-green-100 rounded-lg p-4 mt-4">
                 <p className="text-sm text-green-700">
-                  No changes needed \u2014 your board looks strong!
+                  No changes needed {"\u2014"} your board looks strong!
                 </p>
               </div>
             )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 
 interface CollapsibleMarkdownProps {
@@ -166,6 +166,7 @@ function CollapsibleSection({
   onDrop,
   onDragEnd,
   onDelete,
+  onEditSection,
   isDragOver,
   cellId,
 }: {
@@ -179,21 +180,97 @@ function CollapsibleSection({
   onDrop: (e: React.DragEvent, index: number) => void;
   onDragEnd: () => void;
   onDelete: (index: number) => void;
+  onEditSection: (index: number, newRawText: string) => void;
   isDragOver: boolean;
   cellId?: string;
 }) {
   const [expanded, setExpanded] = useState(defaultExpanded);
+  const [editing, setEditing] = useState(false);
+  const [editText, setEditText] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (editing && textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
+      textareaRef.current.focus();
+    }
+  }, [editing, editText]);
+
+  function startEditing() {
+    setEditText(section.rawLines.join("\n"));
+    setEditing(true);
+    setExpanded(true);
+  }
+
+  function commitEdit() {
+    onEditSection(index, editText);
+    setEditing(false);
+  }
 
   // Non-collapsible intro section (no header)
   if (!section.header) {
+    if (editing) {
+      return (
+        <div className="mb-1">
+          <textarea
+            ref={textareaRef}
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            onBlur={commitEdit}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setEditing(false);
+              }
+            }}
+            className="w-full text-sm text-stone-800 bg-white border border-teal-300 rounded px-2 py-1.5 resize-none focus:outline-none focus:ring-1 focus:ring-teal-300 min-h-[40px]"
+          />
+        </div>
+      );
+    }
     return (
-      <div className="prose prose-sm prose-stone max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&>ul]:list-disc [&>ul]:pl-5 mb-1">
+      <div
+        className="prose prose-sm prose-stone max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&>ul]:list-disc [&>ul]:pl-5 mb-1 cursor-text"
+        onDoubleClick={(e) => {
+          e.stopPropagation();
+          startEditing();
+        }}
+      >
         <ReactMarkdown>{section.body}</ReactMarkdown>
       </div>
     );
   }
 
   const hasBody = section.body.length > 0;
+
+  if (editing) {
+    return (
+      <div
+        className={
+          "group/section border-b border-stone-100 last:border-b-0 transition-all " +
+          (isDragOver ? "border-t-2 border-t-teal-400" : "")
+        }
+        onDragOver={(e) => onDragOver(e, index)}
+        onDrop={(e) => onDrop(e, index)}
+      >
+        <div className="py-1.5">
+          <textarea
+            ref={textareaRef}
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            onBlur={commitEdit}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setEditing(false);
+              }
+            }}
+            className="w-full text-sm text-stone-800 bg-white border border-teal-300 rounded px-2 py-1.5 resize-none focus:outline-none focus:ring-1 focus:ring-teal-300 min-h-[60px]"
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -227,26 +304,35 @@ function CollapsibleSection({
             </svg>
           </div>
         )}
-        <button
+        <div
           onClick={(e) => {
             e.stopPropagation();
             if (hasBody) setExpanded(!expanded);
           }}
-          onDoubleClick={(e) => e.stopPropagation()}
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            startEditing();
+          }}
           className={
-            "flex-1 text-left py-1.5 flex items-start gap-1.5 " +
-            (hasBody ? "cursor-pointer hover:bg-stone-50/50" : "cursor-default")
+            "flex-1 text-left py-1.5 flex items-start gap-1.5 cursor-text " +
+            (hasBody ? "hover:bg-stone-50/50" : "")
           }
         >
           {hasBody && (
-            <span className="text-[10px] text-stone-400 mt-1 flex-shrink-0 w-3">
+            <span
+              className="text-[10px] text-stone-400 mt-1 flex-shrink-0 w-3 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                setExpanded(!expanded);
+              }}
+            >
               {expanded ? "\u25BC" : "\u25B6"}
             </span>
           )}
           <div className="prose prose-sm prose-stone max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&>p]:mb-0 [&>ul]:mb-0">
             <ReactMarkdown>{section.header}</ReactMarkdown>
           </div>
-        </button>
+        </div>
         {canDelete && (
           <button
             onClick={(e) => {
@@ -273,8 +359,12 @@ function CollapsibleSection({
       </div>
       {hasBody && expanded && (
         <div
+          onDoubleClick={(e) => {
+            e.stopPropagation();
+            startEditing();
+          }}
           className={
-            "pb-1.5 prose prose-sm prose-stone max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 text-stone-600 [&>ul]:list-disc [&>ul]:pl-5 [&_ul_ul]:list-disc [&_ul_ul]:pl-5 " +
+            "pb-1.5 prose prose-sm prose-stone max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 text-stone-600 [&>ul]:list-disc [&>ul]:pl-5 [&_ul_ul]:list-disc [&_ul_ul]:pl-5 cursor-text " +
             (draggable ? "pl-7" : "pl-4.5")
           }
         >
@@ -388,6 +478,19 @@ export default function CollapsibleMarkdown({
     [sections, onChange],
   );
 
+  const handleEditSection = useCallback(
+    (index: number, newRawText: string) => {
+      if (!sections || !onChange) return;
+      const updated = sections.map((s, i) => {
+        if (i !== index) return s;
+        return { ...s, rawLines: newRawText.split("\n") };
+      });
+      const newContent = updated.map((s) => s.rawLines.join("\n")).join("\n");
+      onChange(newContent);
+    },
+    [sections, onChange],
+  );
+
   // Fallback to plain markdown if no collapsible structure detected
   if (!sections) {
     return (
@@ -416,6 +519,7 @@ export default function CollapsibleMarkdown({
           onDrop={handleDrop}
           onDragEnd={handleDragEnd}
           onDelete={handleDelete}
+          onEditSection={handleEditSection}
           isDragOver={dragOverIndex === i && dragSourceIndex.current !== i}
           cellId={cellId}
         />

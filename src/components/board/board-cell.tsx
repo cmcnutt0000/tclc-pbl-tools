@@ -139,8 +139,12 @@ export default function BoardCell({
       onDrop={handleCellDrop}
     >
       <div className="px-3 pt-3 pb-1.5 flex items-start justify-between">
-        <div>
-          <label className="text-xs font-semibold text-stone-700 uppercase tracking-wide flex items-center gap-1.5">
+        <div
+          onDoubleClick={() => setEditing(true)}
+          className="cursor-text"
+          title="Double-click to edit entire cell"
+        >
+          <label className="text-xs font-semibold text-stone-700 uppercase tracking-wide flex items-center gap-1.5 cursor-text">
             {getCellIcon(cell.label) && (
               <span className="text-sm not-italic">
                 {getCellIcon(cell.label)}
@@ -196,11 +200,7 @@ export default function BoardCell({
           rows={2}
         />
       ) : (
-        <div
-          onDoubleClick={() => setEditing(true)}
-          className="w-full px-3 pb-4 text-sm text-stone-800 min-h-[60px]"
-          title="Double-click to edit"
-        >
+        <div className="w-full px-3 pb-4 text-sm text-stone-800 min-h-[60px]">
           {cell.value ? (
             <CollapsibleMarkdown
               content={cell.value}
@@ -209,7 +209,10 @@ export default function BoardCell({
               onCrossCellDrop={onCrossCellDrop}
             />
           ) : (
-            <p className="text-stone-300">
+            <p
+              className="text-stone-300 cursor-text"
+              onDoubleClick={() => setEditing(true)}
+            >
               {"Enter " + cell.label.toLowerCase() + "..."}
             </p>
           )}

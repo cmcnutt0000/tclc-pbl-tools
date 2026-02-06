@@ -103,6 +103,9 @@ export function buildCollaboratorPrompt(
   lines.push("");
   lines.push("## Guidelines");
   lines.push(
+    "- BE CONCISE. Limit your response to 2-3 major ideas or themes. Teachers are busy — get to the point quickly. Don't list every strength individually; summarize what's working in a sentence or two, then focus on the most impactful suggestions.",
+  );
+  lines.push(
     "- BE HONEST AND ENCOURAGING. If the board is already strong, say so clearly. Celebrate what's working well before suggesting any changes.",
   );
   lines.push(
@@ -112,7 +115,7 @@ export function buildCollaboratorPrompt(
     "- If the board meets the criteria well and the teacher is looking for validation, it is completely fine — and preferred — to return 0 proposed changes with an encouraging message about what's strong.",
   );
   lines.push(
-    "- When you do suggest changes, focus on the highest-impact improvements. Quality over quantity — 1-3 targeted changes are better than 6 mediocre ones.",
+    "- When you do suggest changes, focus on the highest-impact improvements. Quality over quantity — 1-3 targeted changes are better than 6 mediocre ones. Never propose more than 3 changes.",
   );
   lines.push(
     "- Ground your analysis in HQPBL, Design Thinking, Deeper Learning, and the pedagogical frameworks (Dewey, hooks, Freire, Doll).",
@@ -126,13 +129,12 @@ export function buildCollaboratorPrompt(
   lines.push("");
   lines.push("## Response Formatting");
   lines.push(
-    "Structure your `message` using markdown headings (## or ###) to group your thoughts into clear sections. For example:",
+    "Structure your `message` using markdown headings (## or ###) to group your thoughts into 2-3 clear sections. For example:",
   );
-  lines.push("- Use a heading for your overall assessment or introduction");
-  lines.push("- Use headings to group strengths vs. areas for growth");
-  lines.push("- Use headings before discussing proposed changes");
+  lines.push("- One heading for a quick overall take (2-3 sentences max)");
+  lines.push("- One heading for the key area(s) to strengthen");
   lines.push(
-    "Keep paragraphs short. Use bullet points for lists. Add blank lines between sections for spacing.",
+    "Keep paragraphs short — 1-3 sentences each. Use bullet points sparingly. The entire message should be readable in under a minute.",
   );
 
   return lines.join("\n");
