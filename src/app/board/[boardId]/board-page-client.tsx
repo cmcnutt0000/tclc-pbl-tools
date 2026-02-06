@@ -45,7 +45,7 @@ export default function BoardPageClient({
   const [variationLoading, setVariationLoading] = useState(false);
   const [showGeneratedBanner, setShowGeneratedBanner] = useState(false);
 
-  const [collaboratorCollapsed, setCollaboratorCollapsed] = useState(true);
+  const [collaboratorCollapsed, setCollaboratorCollapsed] = useState(false);
   const [collaboratorFullscreen, setCollaboratorFullscreen] = useState(false);
   const [collaboratorLoading, setCollaboratorLoading] = useState(false);
   const [collaboratorResponse, setCollaboratorResponse] =
@@ -535,12 +535,16 @@ export default function BoardPageClient({
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden">
         {/* Main board area */}
         <div
           className={
-            "flex-1 overflow-y-auto transition-all duration-200 " +
-            (collaboratorFullscreen && sidebarOpen ? "hidden" : "")
+            "h-full overflow-y-auto transition-all duration-200 " +
+            (collaboratorFullscreen && sidebarOpen
+              ? "hidden"
+              : sidebarOpen
+                ? "mr-[420px]"
+                : "")
           }
         >
           <div className="max-w-7xl mx-auto px-4 pt-4">

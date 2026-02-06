@@ -187,7 +187,7 @@ export default function CollaboratorPanel({
   return (
     <div
       className={
-        "flex flex-col bg-white border-l border-stone-200 shadow-xl h-full " +
+        "fixed inset-y-0 right-0 z-40 flex flex-col bg-white border-l border-stone-200 shadow-xl " +
         panelWidth +
         " transition-all duration-200"
       }
