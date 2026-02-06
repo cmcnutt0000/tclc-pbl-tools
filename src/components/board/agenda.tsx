@@ -31,7 +31,7 @@ function AiImproveButton({
     return (
       <button
         onClick={() => setShowInput(true)}
-        className="opacity-0 group-hover/entry:opacity-100 transition-opacity text-[10px] bg-amber-100 hover:bg-amber-200 text-amber-700 px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap"
+        className="opacity-0 group-hover/entry:opacity-100 transition-opacity text-[10px] bg-brand-100 hover:bg-brand-200 text-brand-700 px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap"
         title="Improve with AI"
       >
         &#x2728; AI
@@ -205,7 +205,7 @@ export default function Agenda({
               style={{ backgroundColor: "#C2D5D8" }}
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-stone-600">
+                <span className="text-xs font-semibold text-stone-800">
                   {"Session " + (i + 1)}
                 </span>
                 {entries.length > 1 && (
@@ -242,7 +242,7 @@ export default function Agenda({
               />
               <div className="min-h-[60px]">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] text-stone-400 uppercase tracking-wide">
+                  <label className="text-[10px] text-stone-700 uppercase tracking-wide font-semibold">
                     Activities
                   </label>
                   {onFixWithAi && entry.eventsContent && (
@@ -287,7 +287,7 @@ export default function Agenda({
               </div>
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] text-stone-400 uppercase tracking-wide">
+                  <label className="text-[10px] text-stone-700 uppercase tracking-wide font-semibold">
                     Reflection
                   </label>
                   {onFixWithAi && entry.reflection && (
@@ -310,7 +310,7 @@ export default function Agenda({
                 ) : entry.reflection ? (
                   <div
                     onDoubleClick={() => setEditingReflection(i)}
-                    className="text-sm text-stone-600 cursor-default"
+                    className="text-sm text-stone-800 cursor-default"
                     title="Double-click to edit"
                   >
                     <CollapsibleMarkdown

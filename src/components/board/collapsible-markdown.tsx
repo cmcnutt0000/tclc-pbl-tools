@@ -364,7 +364,7 @@ function CollapsibleSection({
             startEditing();
           }}
           className={
-            "pb-1.5 prose prose-sm prose-stone max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 text-stone-600 [&>ul]:list-disc [&>ul]:pl-5 [&_ul_ul]:list-disc [&_ul_ul]:pl-5 cursor-text " +
+            "pb-1.5 prose prose-sm prose-stone max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 text-stone-800 [&>ul]:list-disc [&>ul]:pl-5 [&_ul_ul]:list-disc [&_ul_ul]:pl-5 cursor-text " +
             (draggable ? "pl-7" : "pl-4.5")
           }
         >

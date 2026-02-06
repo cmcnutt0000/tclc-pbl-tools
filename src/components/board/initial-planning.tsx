@@ -106,6 +106,7 @@ export default function InitialPlanning({
                 }
                 onCrossCellDrop={onCrossCellDrop}
                 sectionColor="#D5E3ED"
+                phase={1}
               />
               <BoardCell
                 cell={data.noticeReflect}
@@ -120,6 +121,7 @@ export default function InitialPlanning({
                 }
                 onCrossCellDrop={onCrossCellDrop}
                 sectionColor="#D5E3ED"
+                phase={1}
               />
               <BoardCell
                 cell={data.openingActivity}
@@ -136,6 +138,7 @@ export default function InitialPlanning({
                 }
                 onCrossCellDrop={onCrossCellDrop}
                 sectionColor="#D5E3ED"
+                phase={1}
               />
               <BoardCell
                 cell={data.communityPartners}
@@ -152,6 +155,7 @@ export default function InitialPlanning({
                 }
                 onCrossCellDrop={onCrossCellDrop}
                 sectionColor="#D5E3ED"
+                phase={1}
               />
             </div>
           )}
@@ -189,6 +193,7 @@ export default function InitialPlanning({
                     }
                     onCrossCellDrop={onCrossCellDrop}
                     sectionColor="#D5E3ED"
+                    phase={1}
                   />
                 );
               })}
@@ -222,6 +227,7 @@ export default function InitialPlanning({
                     onAiClick={() => onAiClick("additional-" + i, cell)}
                     onCrossCellDrop={onCrossCellDrop}
                     sectionColor="#D5E3ED"
+                    phase={1}
                   />
                   <button
                     onClick={() => removeColumn(i)}

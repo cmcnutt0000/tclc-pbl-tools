@@ -31,6 +31,8 @@ export default function DesignThinking({
   onCrossCellDrop,
 }: DesignThinkingProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const [stepsCollapsed, setStepsCollapsed] = useState(false);
+  const [milestonesCollapsed, setMilestonesCollapsed] = useState(false);
   const [additionalCollapsed, setAdditionalCollapsed] = useState(false);
 
   function updateCell(key: keyof DesignThinkingType, value: string) {
@@ -96,134 +98,178 @@ export default function DesignThinking({
               }
               onCrossCellDrop={onCrossCellDrop}
               sectionColor="#C8D8CE"
+              phase={2}
             />
           </div>
 
           {/* Steps row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-3">
-            <BoardCell
-              cell={data.empathize}
-              cellId="empathize"
-              onChange={(v) => updateCell("empathize", v)}
-              onAiClick={() => onAiClick("empathize", data.empathize)}
-              onFixWithAi={(fb) => onFixWithAi("empathize", data.empathize, fb)}
-              onAddWithAi={(desc) =>
-                onAddWithAi("empathize", data.empathize, desc)
-              }
-              onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#C8D8CE"
-            />
-            <BoardCell
-              cell={data.define}
-              cellId="define"
-              onChange={(v) => updateCell("define", v)}
-              onAiClick={() => onAiClick("define", data.define)}
-              onFixWithAi={(fb) => onFixWithAi("define", data.define, fb)}
-              onAddWithAi={(desc) => onAddWithAi("define", data.define, desc)}
-              onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#C8D8CE"
-            />
-            <BoardCell
-              cell={data.ideate}
-              cellId="ideate"
-              onChange={(v) => updateCell("ideate", v)}
-              onAiClick={() => onAiClick("ideate", data.ideate)}
-              onFixWithAi={(fb) => onFixWithAi("ideate", data.ideate, fb)}
-              onAddWithAi={(desc) => onAddWithAi("ideate", data.ideate, desc)}
-              onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#C8D8CE"
-            />
-            <BoardCell
-              cell={data.prototypeTest}
-              cellId="prototypeTest"
-              onChange={(v) => updateCell("prototypeTest", v)}
-              onAiClick={() => onAiClick("prototypeTest", data.prototypeTest)}
-              onFixWithAi={(fb) =>
-                onFixWithAi("prototypeTest", data.prototypeTest, fb)
-              }
-              onAddWithAi={(desc) =>
-                onAddWithAi("prototypeTest", data.prototypeTest, desc)
-              }
-              onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#C8D8CE"
-            />
-          </div>
+          <button
+            onClick={() => setStepsCollapsed(!stepsCollapsed)}
+            className="flex items-center gap-1.5 mb-2 group"
+          >
+            <span className="text-[10px] text-stone-400 w-3">
+              {stepsCollapsed ? "\u25B6" : "\u25BC"}
+            </span>
+            <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide group-hover:text-stone-700">
+              Design Thinking Steps
+            </h3>
+          </button>
+          {!stepsCollapsed && (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-3">
+              <BoardCell
+                cell={data.empathize}
+                cellId="empathize"
+                onChange={(v) => updateCell("empathize", v)}
+                onAiClick={() => onAiClick("empathize", data.empathize)}
+                onFixWithAi={(fb) =>
+                  onFixWithAi("empathize", data.empathize, fb)
+                }
+                onAddWithAi={(desc) =>
+                  onAddWithAi("empathize", data.empathize, desc)
+                }
+                onCrossCellDrop={onCrossCellDrop}
+                sectionColor="#C8D8CE"
+                phase={2}
+              />
+              <BoardCell
+                cell={data.define}
+                cellId="define"
+                onChange={(v) => updateCell("define", v)}
+                onAiClick={() => onAiClick("define", data.define)}
+                onFixWithAi={(fb) => onFixWithAi("define", data.define, fb)}
+                onAddWithAi={(desc) => onAddWithAi("define", data.define, desc)}
+                onCrossCellDrop={onCrossCellDrop}
+                sectionColor="#C8D8CE"
+                phase={2}
+              />
+              <BoardCell
+                cell={data.ideate}
+                cellId="ideate"
+                onChange={(v) => updateCell("ideate", v)}
+                onAiClick={() => onAiClick("ideate", data.ideate)}
+                onFixWithAi={(fb) => onFixWithAi("ideate", data.ideate, fb)}
+                onAddWithAi={(desc) => onAddWithAi("ideate", data.ideate, desc)}
+                onCrossCellDrop={onCrossCellDrop}
+                sectionColor="#C8D8CE"
+                phase={2}
+              />
+              <BoardCell
+                cell={data.prototypeTest}
+                cellId="prototypeTest"
+                onChange={(v) => updateCell("prototypeTest", v)}
+                onAiClick={() => onAiClick("prototypeTest", data.prototypeTest)}
+                onFixWithAi={(fb) =>
+                  onFixWithAi("prototypeTest", data.prototypeTest, fb)
+                }
+                onAddWithAi={(desc) =>
+                  onAddWithAi("prototypeTest", data.prototypeTest, desc)
+                }
+                onCrossCellDrop={onCrossCellDrop}
+                sectionColor="#C8D8CE"
+                phase={2}
+              />
+            </div>
+          )}
 
           {/* Milestones row — aligned horizontally */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-            <BoardCell
-              cell={data.milestoneEmpathize}
-              cellId="milestoneEmpathize"
-              onChange={(v) => updateCell("milestoneEmpathize", v)}
-              onAiClick={() =>
-                onAiClick("milestoneEmpathize", data.milestoneEmpathize)
-              }
-              onFixWithAi={(fb) =>
-                onFixWithAi("milestoneEmpathize", data.milestoneEmpathize, fb)
-              }
-              onAddWithAi={(desc) =>
-                onAddWithAi("milestoneEmpathize", data.milestoneEmpathize, desc)
-              }
-              onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#C8D8CE"
-            />
-            <BoardCell
-              cell={data.milestoneDefine}
-              cellId="milestoneDefine"
-              onChange={(v) => updateCell("milestoneDefine", v)}
-              onAiClick={() =>
-                onAiClick("milestoneDefine", data.milestoneDefine)
-              }
-              onFixWithAi={(fb) =>
-                onFixWithAi("milestoneDefine", data.milestoneDefine, fb)
-              }
-              onAddWithAi={(desc) =>
-                onAddWithAi("milestoneDefine", data.milestoneDefine, desc)
-              }
-              onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#C8D8CE"
-            />
-            <BoardCell
-              cell={data.milestoneIdeate}
-              cellId="milestoneIdeate"
-              onChange={(v) => updateCell("milestoneIdeate", v)}
-              onAiClick={() =>
-                onAiClick("milestoneIdeate", data.milestoneIdeate)
-              }
-              onFixWithAi={(fb) =>
-                onFixWithAi("milestoneIdeate", data.milestoneIdeate, fb)
-              }
-              onAddWithAi={(desc) =>
-                onAddWithAi("milestoneIdeate", data.milestoneIdeate, desc)
-              }
-              onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#C8D8CE"
-            />
-            <BoardCell
-              cell={data.milestonePrototypeTest}
-              cellId="milestonePrototypeTest"
-              onChange={(v) => updateCell("milestonePrototypeTest", v)}
-              onAiClick={() =>
-                onAiClick("milestonePrototypeTest", data.milestonePrototypeTest)
-              }
-              onFixWithAi={(fb) =>
-                onFixWithAi(
-                  "milestonePrototypeTest",
-                  data.milestonePrototypeTest,
-                  fb,
-                )
-              }
-              onAddWithAi={(desc) =>
-                onAddWithAi(
-                  "milestonePrototypeTest",
-                  data.milestonePrototypeTest,
-                  desc,
-                )
-              }
-              onCrossCellDrop={onCrossCellDrop}
-              sectionColor="#C8D8CE"
-            />
-          </div>
+          <button
+            onClick={() => setMilestonesCollapsed(!milestonesCollapsed)}
+            className="flex items-center gap-1.5 mb-2 group"
+          >
+            <span className="text-[10px] text-stone-400 w-3">
+              {milestonesCollapsed ? "\u25B6" : "\u25BC"}
+            </span>
+            <h3 className="text-xs font-semibold text-stone-500 uppercase tracking-wide group-hover:text-stone-700">
+              Milestones
+            </h3>
+          </button>
+          {!milestonesCollapsed && (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+              <BoardCell
+                cell={data.milestoneEmpathize}
+                cellId="milestoneEmpathize"
+                onChange={(v) => updateCell("milestoneEmpathize", v)}
+                onAiClick={() =>
+                  onAiClick("milestoneEmpathize", data.milestoneEmpathize)
+                }
+                onFixWithAi={(fb) =>
+                  onFixWithAi("milestoneEmpathize", data.milestoneEmpathize, fb)
+                }
+                onAddWithAi={(desc) =>
+                  onAddWithAi(
+                    "milestoneEmpathize",
+                    data.milestoneEmpathize,
+                    desc,
+                  )
+                }
+                onCrossCellDrop={onCrossCellDrop}
+                sectionColor="#C8D8CE"
+                phase={2}
+              />
+              <BoardCell
+                cell={data.milestoneDefine}
+                cellId="milestoneDefine"
+                onChange={(v) => updateCell("milestoneDefine", v)}
+                onAiClick={() =>
+                  onAiClick("milestoneDefine", data.milestoneDefine)
+                }
+                onFixWithAi={(fb) =>
+                  onFixWithAi("milestoneDefine", data.milestoneDefine, fb)
+                }
+                onAddWithAi={(desc) =>
+                  onAddWithAi("milestoneDefine", data.milestoneDefine, desc)
+                }
+                onCrossCellDrop={onCrossCellDrop}
+                sectionColor="#C8D8CE"
+                phase={2}
+              />
+              <BoardCell
+                cell={data.milestoneIdeate}
+                cellId="milestoneIdeate"
+                onChange={(v) => updateCell("milestoneIdeate", v)}
+                onAiClick={() =>
+                  onAiClick("milestoneIdeate", data.milestoneIdeate)
+                }
+                onFixWithAi={(fb) =>
+                  onFixWithAi("milestoneIdeate", data.milestoneIdeate, fb)
+                }
+                onAddWithAi={(desc) =>
+                  onAddWithAi("milestoneIdeate", data.milestoneIdeate, desc)
+                }
+                onCrossCellDrop={onCrossCellDrop}
+                sectionColor="#C8D8CE"
+                phase={2}
+              />
+              <BoardCell
+                cell={data.milestonePrototypeTest}
+                cellId="milestonePrototypeTest"
+                onChange={(v) => updateCell("milestonePrototypeTest", v)}
+                onAiClick={() =>
+                  onAiClick(
+                    "milestonePrototypeTest",
+                    data.milestonePrototypeTest,
+                  )
+                }
+                onFixWithAi={(fb) =>
+                  onFixWithAi(
+                    "milestonePrototypeTest",
+                    data.milestonePrototypeTest,
+                    fb,
+                  )
+                }
+                onAddWithAi={(desc) =>
+                  onAddWithAi(
+                    "milestonePrototypeTest",
+                    data.milestonePrototypeTest,
+                    desc,
+                  )
+                }
+                onCrossCellDrop={onCrossCellDrop}
+                sectionColor="#C8D8CE"
+                phase={2}
+              />
+            </div>
+          )}
 
           {/* Additional columns */}
           {data.additional && data.additional.length > 0 && (
@@ -253,6 +299,7 @@ export default function DesignThinking({
                         }
                         onCrossCellDrop={onCrossCellDrop}
                         sectionColor="#C8D8CE"
+                        phase={2}
                       />
                       <button
                         onClick={() => removeAdditional(i)}

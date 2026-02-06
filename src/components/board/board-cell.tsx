@@ -41,7 +41,15 @@ interface BoardCellProps {
     dropIndex?: number,
   ) => void;
   sectionColor?: string;
+  phase?: 1 | 2 | 3;
 }
+
+const AI_BUTTON_STYLES: Record<number, string> = {
+  1: "bg-brand-100 hover:bg-brand-200 text-brand-700",
+  2: "bg-green-100 hover:bg-green-200 text-green-700",
+  3: "bg-brand-100 hover:bg-brand-200 text-brand-700",
+};
+const AI_BUTTON_DEFAULT = "bg-amber-100 hover:bg-amber-200 text-amber-700";
 
 export default function BoardCell({
   cell,
@@ -52,6 +60,7 @@ export default function BoardCell({
   onAddWithAi,
   onCrossCellDrop,
   sectionColor,
+  phase,
 }: BoardCellProps) {
   const [editing, setEditing] = useState(false);
   const [aiMenu, setAiMenu] = useState(false);
@@ -164,7 +173,10 @@ export default function BoardCell({
         <div className="relative" ref={menuRef}>
           <button
             onClick={handleAiButtonClick}
-            className="opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-amber-100 hover:bg-amber-200 text-amber-700 px-2 py-0.5 rounded-full font-medium whitespace-nowrap"
+            className={
+              "opacity-0 group-hover:opacity-100 transition-opacity text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap " +
+              (phase ? AI_BUTTON_STYLES[phase] : AI_BUTTON_DEFAULT)
+            }
             title="AI options"
           >
             &#x2728; AI

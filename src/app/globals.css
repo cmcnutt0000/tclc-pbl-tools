@@ -96,3 +96,12 @@ h3 {
     font-size: 1.125rem;
     line-height: 1.5rem;
 }
+
+/* Make prose bullets and text dark instead of gray */
+.prose-stone :where(li)::marker {
+    color: var(--color-stone-800);
+}
+
+.prose-stone :where(p, li, ul, ol) {
+    color: var(--color-stone-800);
+}
