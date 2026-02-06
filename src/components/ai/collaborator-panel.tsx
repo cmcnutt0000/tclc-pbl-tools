@@ -61,11 +61,6 @@ interface CollaboratorPanelProps {
 
 type ChangeStatus = "pending" | "accepted" | "rejected";
 
-function truncate(text: string, maxLen: number): string {
-  if (text.length <= maxLen) return text;
-  return text.slice(0, maxLen) + "\u2026";
-}
-
 /** Parse the AI message into structured sections for clean display */
 function parseMessageSections(
   message: string,
@@ -341,9 +336,9 @@ export default function CollaboratorPanel({
 
             {/* Proposed changes */}
             {response.proposedChanges.length > 0 && (
-              <div className="space-y-3 mt-5">
+              <div className="space-y-3 mt-5 bg-amber-50/60 border border-amber-100 rounded-xl p-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs text-stone-500 uppercase tracking-wide font-semibold">
+                  <h4 className="text-xs text-amber-700 uppercase tracking-wide font-semibold">
                     Proposed Changes ({response.proposedChanges.length})
                   </h4>
                   {pendingCount > 1 && (
@@ -402,14 +397,14 @@ export default function CollaboratorPanel({
                             <span className="font-semibold text-stone-600">
                               Current:
                             </span>{" "}
-                            {truncate(change.currentValue, 150)}
+                            {change.currentValue}
                           </div>
                         )}
                         <div className="text-sm text-teal-800 bg-teal-50 rounded px-3 py-2 leading-relaxed">
                           <span className="font-semibold text-teal-700">
                             Proposed:
                           </span>{" "}
-                          {truncate(change.proposedValue, 150)}
+                          {change.proposedValue}
                         </div>
 
                         {/* Rationale */}
