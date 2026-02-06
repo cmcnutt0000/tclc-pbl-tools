@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Board {
+  id             String   @id @default(cuid())
+  title          String   @default("Untitled Board")
+  slug           String   @unique
+  liveblocksRoom String   @unique
+  state          String?
+  gradeLevel     String?
+  subjects       String?
+  location       String?
+  content        String   @default("{}")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model StandardSet {
+  id         String     @id @default(cuid())
+  state      String
+  subject    String
+  gradeLevel String
+  framework  String?
+  standards  Standard[]
+  @@unique([state, subject, gradeLevel])
+}
+
+model Standard {
+  id            String      @id @default(cuid())
+  code          String
+  description   String
+  category      String?
+  standardSet   StandardSet @relation(fields: [standardSetId], references: [id])
+  standardSetId String
+}
+
+model AiInteraction {
+  id         String   @id @default(cuid())
+  boardId    String
+  cellId     String
+  actionType String
+  prompt     String
+  response   String
+  selected   Boolean  @default(false)
+  tokenCount Int?
+  createdAt  DateTime @default(now())
+}
