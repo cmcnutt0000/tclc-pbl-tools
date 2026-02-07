@@ -1,10 +1,15 @@
 export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/db";
+import { auth0 } from "@/lib/auth0";
 import Link from "next/link";
 import CreateBoardButton from "./create-board-button";
 
 export default async function Dashboard() {
+  const session = await auth0.getSession();
+  const user = session?.user;
+
   const boards = await prisma.board.findMany({
+    where: user?.sub ? { userId: user.sub } : { userId: null },
     orderBy: { updatedAt: "desc" },
   });
 
@@ -25,7 +30,22 @@ export default async function Dashboard() {
               </p>
             </div>
           </div>
-          <CreateBoardButton />
+          <div className="flex items-center gap-4">
+            {user && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-brand-200">
+                  {user.name || user.email}
+                </span>
+                <a
+                  href="/auth/logout"
+                  className="text-sm text-brand-300 hover:text-white transition-colors"
+                >
+                  Sign Out
+                </a>
+              </div>
+            )}
+            <CreateBoardButton />
+          </div>
         </div>
       </header>
 

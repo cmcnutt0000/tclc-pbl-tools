@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import { prisma } from "@/lib/db";
+import { auth0 } from "@/lib/auth0";
 import { notFound } from "next/navigation";
 import BoardPageClient from "./board-page-client";
 import type { BoardContent, BoardContext } from "@/types/board";
@@ -16,8 +17,14 @@ interface Props {
 
 export default async function BoardPage({ params }: Props) {
   const { boardId } = await params;
+  const session = await auth0.getSession();
   const board = await prisma.board.findUnique({ where: { id: boardId } });
   if (!board) notFound();
+
+  // Verify board belongs to the logged-in user (or is unowned)
+  if (board.userId && session?.user?.sub && board.userId !== session.user.sub) {
+    notFound();
+  }
 
   let content: BoardContent;
   try {

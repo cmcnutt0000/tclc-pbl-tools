@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { useUser } from "@auth0/nextjs-auth0/client";
 import type { BoardContent, BoardContext, CellContent } from "@/types/board";
 import {
   syncStandardsCells,
@@ -30,6 +31,7 @@ export default function BoardPageClient({
   initialContent,
   initialContext,
 }: BoardPageClientProps) {
+  const { user } = useUser();
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState<BoardContent>(initialContent);
   const [context, setContext] = useState<BoardContext>(initialContext);
@@ -626,6 +628,19 @@ export default function BoardPageClient({
               TCLC PBL Tools
             </span>
           </a>
+          {user && (
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-brand-200">
+                {user.name || user.email}
+              </span>
+              <a
+                href="/auth/logout"
+                className="text-sm text-brand-300 hover:text-white transition-colors"
+              >
+                Sign Out
+              </a>
+            </div>
+          )}
         </div>
       </header>
 
