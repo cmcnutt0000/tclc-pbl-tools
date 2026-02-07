@@ -317,7 +317,7 @@ export default function DesignThinking({
           <div className="mt-3">
             <button
               onClick={addAdditional}
-              className="border-2 border-dashed border-brand-200 rounded-lg text-brand-400 hover:border-brand-400 hover:text-brand-600 transition-colors px-4 py-2 text-sm font-medium"
+              className="border-2 border-dashed border-green-200 rounded-lg text-green-600 hover:border-green-400 hover:text-green-700 transition-colors px-4 py-2 text-sm font-medium"
             >
               + Add Additional
             </button>
