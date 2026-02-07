@@ -1,6 +1,12 @@
 "use client";
 
-import type { BoardContent, BoardContext, CellContent } from "@/types/board";
+import type {
+  BoardContent,
+  BoardContext,
+  CellContent,
+  LessonPlan,
+  LessonPlanContent,
+} from "@/types/board";
 import InitialPlanning from "./initial-planning";
 import DesignThinking from "./design-thinking";
 import Agenda from "./agenda";
@@ -34,6 +40,16 @@ interface DesignBoardProps {
   disabled?: boolean;
   canGenerateBoard?: boolean;
   canGenerateTitle?: boolean;
+  lessons?: LessonPlan[];
+  onGenerateLessons?: (
+    agendaEntryId: string,
+    sessionIndex: number,
+    selections: Array<{ subject: string; periodMinutes: number }>,
+  ) => void;
+  onUpdateLesson?: (lessonId: string, content: LessonPlanContent) => void;
+  onDeleteLesson?: (lessonId: string) => void;
+  onRegenerateLesson?: (lesson: LessonPlan) => void;
+  lessonLoading?: Record<string, boolean>;
 }
 
 export default function DesignBoard({
@@ -56,6 +72,12 @@ export default function DesignBoard({
   disabled,
   canGenerateBoard,
   canGenerateTitle,
+  lessons,
+  onGenerateLessons,
+  onUpdateLesson,
+  onDeleteLesson,
+  onRegenerateLesson,
+  lessonLoading,
 }: DesignBoardProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -137,6 +159,13 @@ export default function DesignBoard({
           onFixWithAi={onFixWithAiAgenda}
           agendaLoading={agendaLoading}
           boardComplete={boardComplete}
+          subjects={context.subjects}
+          lessons={lessons}
+          onGenerateLessons={onGenerateLessons}
+          onUpdateLesson={onUpdateLesson}
+          onDeleteLesson={onDeleteLesson}
+          onRegenerateLesson={onRegenerateLesson}
+          lessonLoading={lessonLoading}
         />
       </div>
     </div>

@@ -2,7 +2,13 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import type { BoardContent, BoardContext, CellContent } from "@/types/board";
+import type {
+  BoardContent,
+  BoardContext,
+  CellContent,
+  LessonPlan,
+  LessonPlanContent,
+} from "@/types/board";
 import {
   syncStandardsCells,
   createStandardsCell,
@@ -55,6 +61,11 @@ export default function BoardPageClient({
 
   const [agendaLoading, setAgendaLoading] = useState(false);
   const [titleLoading, setTitleLoading] = useState(false);
+
+  const [lessons, setLessons] = useState<LessonPlan[]>([]);
+  const [lessonLoading, setLessonLoading] = useState<Record<string, boolean>>(
+    {},
+  );
 
   // Undo/redo history
   const historyRef = useRef<{
@@ -173,6 +184,23 @@ export default function BoardPageClient({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [undo, redo]);
+
+  // Load lessons on mount
+  useEffect(() => {
+    async function loadLessons() {
+      try {
+        const res = await fetch("/api/lessons?boardId=" + boardId);
+        if (res.ok) {
+          const data = await res.json();
+          setLessons(data);
+        }
+      } catch (err) {
+        console.error("Failed to load lessons:", err);
+      }
+    }
+    loadLessons();
+  }, [boardId]);
+
   function handleContextChange(nctx: BoardContext) {
     setContext(nctx);
     const newSubjects = nctx.subjects || [];
@@ -609,6 +637,138 @@ export default function BoardPageClient({
     }
   }
 
+  async function handleGenerateLessons(
+    agendaEntryId: string,
+    sessionIndex: number,
+    selections: Array<{ subject: string; periodMinutes: number }>,
+  ) {
+    setLessonLoading((prev) => ({ ...prev, [agendaEntryId]: true }));
+
+    const agendaEntry = content.agenda[sessionIndex];
+    if (!agendaEntry) {
+      setLessonLoading((prev) => ({ ...prev, [agendaEntryId]: false }));
+      return;
+    }
+
+    try {
+      for (const { subject, periodMinutes } of selections) {
+        const aiRes = await fetch("/api/ai/generate-lesson", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            content,
+            context,
+            agendaEntry,
+            sessionIndex,
+            subject,
+            periodMinutes,
+          }),
+        });
+        const aiData = await aiRes.json();
+        if (aiData.error) {
+          console.error(
+            "Lesson generation error for " + subject + ":",
+            aiData.error,
+          );
+          continue;
+        }
+
+        const saveRes = await fetch("/api/lessons", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            boardId,
+            agendaEntryId,
+            subject,
+            periodMinutes,
+            content: aiData,
+          }),
+        });
+        const saved = await saveRes.json();
+        if (!saved.error) {
+          setLessons((prev) => [...prev, saved]);
+        }
+      }
+    } catch (err) {
+      console.error("Lesson generation failed:", err);
+      alert("Unable to generate lessons. Please try again.");
+    } finally {
+      setLessonLoading((prev) => ({ ...prev, [agendaEntryId]: false }));
+    }
+  }
+
+  async function handleUpdateLesson(
+    lessonId: string,
+    updatedContent: LessonPlanContent,
+  ) {
+    setLessons((prev) =>
+      prev.map((l) =>
+        l.id === lessonId ? { ...l, content: updatedContent } : l,
+      ),
+    );
+    await fetch("/api/lessons/" + lessonId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: updatedContent }),
+    });
+  }
+
+  async function handleDeleteLesson(lessonId: string) {
+    setLessons((prev) => prev.filter((l) => l.id !== lessonId));
+    await fetch("/api/lessons/" + lessonId, { method: "DELETE" });
+  }
+
+  async function handleRegenerateLesson(lesson: LessonPlan) {
+    const sessionIndex = content.agenda.findIndex(
+      (a) => a.id === lesson.agendaEntryId,
+    );
+    if (sessionIndex === -1) return;
+
+    setLessonLoading((prev) => ({
+      ...prev,
+      [lesson.agendaEntryId]: true,
+    }));
+
+    try {
+      const agendaEntry = content.agenda[sessionIndex];
+      const aiRes = await fetch("/api/ai/generate-lesson", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content,
+          context,
+          agendaEntry,
+          sessionIndex,
+          subject: lesson.subject,
+          periodMinutes: lesson.periodMinutes,
+        }),
+      });
+      const aiData = await aiRes.json();
+      if (aiData.error) {
+        alert("Lesson regeneration failed. Please try again.");
+        return;
+      }
+
+      const saveRes = await fetch("/api/lessons/" + lesson.id, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: aiData }),
+      });
+      const saved = await saveRes.json();
+      if (!saved.error) {
+        setLessons((prev) => prev.map((l) => (l.id === lesson.id ? saved : l)));
+      }
+    } catch (err) {
+      console.error("Lesson regeneration failed:", err);
+      alert("Unable to regenerate lesson. Please try again.");
+    } finally {
+      setLessonLoading((prev) => ({
+        ...prev,
+        [lesson.agendaEntryId]: false,
+      }));
+    }
+  }
+
   const sidebarOpen = !collaboratorCollapsed;
 
   return (
@@ -696,6 +856,12 @@ export default function BoardPageClient({
             disabled={!contextComplete}
             canGenerateBoard={filledCellCount >= 2}
             canGenerateTitle={!!content.initialPlanning.mainIdea.value.trim()}
+            lessons={lessons}
+            onGenerateLessons={handleGenerateLessons}
+            onUpdateLesson={handleUpdateLesson}
+            onDeleteLesson={handleDeleteLesson}
+            onRegenerateLesson={handleRegenerateLesson}
+            lessonLoading={lessonLoading}
           />
         </div>
 

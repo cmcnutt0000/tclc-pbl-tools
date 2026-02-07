@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { auth0 } from "@/lib/auth0";
+import { auth0 } from "./lib/auth0";
 
 const ALLOWED_DOMAINS = [
   "humanrestorationproject.org",

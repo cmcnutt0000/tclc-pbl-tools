@@ -56,6 +56,27 @@ export interface BoardContext {
   location?: string;
 }
 
+export interface LessonPlanContent {
+  learningObjectives: string;
+  materials: string;
+  warmUpHook: string;
+  mainActivities: string;
+  closingExitTicket: string;
+  differentiationNotes: string;
+  standardsAddressed: string;
+}
+
+export interface LessonPlan {
+  id: string;
+  boardId: string;
+  agendaEntryId: string;
+  subject: string;
+  periodMinutes: number;
+  content: LessonPlanContent;
+  createdAt: string;
+  updatedAt: string;
+}
+
 let cellCounter = 0;
 function nextId() {
   cellCounter++;

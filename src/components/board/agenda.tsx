@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { AgendaEntry } from "@/types/board";
+import type { AgendaEntry, LessonPlan, LessonPlanContent } from "@/types/board";
 import { createEmptyAgendaEntry } from "@/types/board";
 import CollapsibleMarkdown from "./collapsible-markdown";
+import LessonPlanCard from "./lesson-plan-card";
+import LessonGenerator from "./lesson-generator";
 
 interface AgendaProps {
   entries: AgendaEntry[];
@@ -16,6 +18,17 @@ interface AgendaProps {
   ) => Promise<void>;
   agendaLoading?: boolean;
   boardComplete?: boolean;
+  subjects?: string[];
+  lessons?: LessonPlan[];
+  onGenerateLessons?: (
+    agendaEntryId: string,
+    sessionIndex: number,
+    selections: Array<{ subject: string; periodMinutes: number }>,
+  ) => void;
+  onUpdateLesson?: (lessonId: string, content: LessonPlanContent) => void;
+  onDeleteLesson?: (lessonId: string) => void;
+  onRegenerateLesson?: (lesson: LessonPlan) => void;
+  lessonLoading?: Record<string, boolean>;
 }
 
 function AiImproveButton({
@@ -92,12 +105,22 @@ export default function Agenda({
   onFixWithAi,
   agendaLoading,
   boardComplete,
+  subjects,
+  lessons,
+  onGenerateLessons,
+  onUpdateLesson,
+  onDeleteLesson,
+  onRegenerateLesson,
+  lessonLoading,
 }: AgendaProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [showDayInput, setShowDayInput] = useState(false);
   const [numDays, setNumDays] = useState(10);
   const [editingContent, setEditingContent] = useState<number | null>(null);
   const [editingReflection, setEditingReflection] = useState<number | null>(
+    null,
+  );
+  const [showLessonGenerator, setShowLessonGenerator] = useState<string | null>(
     null,
   );
 
@@ -330,6 +353,75 @@ export default function Agenda({
                   />
                 )}
               </div>
+              {/* Lesson Plans */}
+              {(() => {
+                const entryLessons =
+                  lessons?.filter((l) => l.agendaEntryId === entry.id) || [];
+                const isLoading = !!lessonLoading?.[entry.id];
+                return (
+                  <div className="border-t border-stone-300/50 pt-2 mt-2">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-[10px] text-stone-700 uppercase tracking-wide font-semibold">
+                        Lesson Plans
+                        {entryLessons.length > 0 && (
+                          <span className="text-stone-400 ml-1">
+                            ({entryLessons.length})
+                          </span>
+                        )}
+                      </label>
+                      {subjects &&
+                        subjects.length > 0 &&
+                        entry.eventsContent &&
+                        onGenerateLessons && (
+                          <button
+                            onClick={() =>
+                              setShowLessonGenerator(
+                                showLessonGenerator === entry.id
+                                  ? null
+                                  : entry.id,
+                              )
+                            }
+                            disabled={isLoading}
+                            className={
+                              "text-[10px] px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap " +
+                              (isLoading
+                                ? "bg-stone-200 text-stone-400"
+                                : "bg-brand-100 hover:bg-brand-200 text-brand-700")
+                            }
+                          >
+                            {isLoading ? "Generating..." : "+ Generate Lessons"}
+                          </button>
+                        )}
+                    </div>
+                    {showLessonGenerator === entry.id &&
+                      subjects &&
+                      onGenerateLessons && (
+                        <LessonGenerator
+                          subjects={subjects}
+                          onGenerate={(selections) => {
+                            onGenerateLessons(entry.id, i, selections);
+                            setShowLessonGenerator(null);
+                          }}
+                          onCancel={() => setShowLessonGenerator(null)}
+                          loading={isLoading}
+                        />
+                      )}
+                    {entryLessons.length > 0 && (
+                      <div className="space-y-1.5 mt-1.5">
+                        {entryLessons.map((lesson) => (
+                          <LessonPlanCard
+                            key={lesson.id}
+                            lesson={lesson}
+                            onUpdate={onUpdateLesson || (() => {})}
+                            onDelete={onDeleteLesson || (() => {})}
+                            onRegenerate={onRegenerateLesson || (() => {})}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           ))}
           <button

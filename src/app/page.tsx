@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { auth0 } from "@/lib/auth0";
 import Link from "next/link";
 import CreateBoardButton from "./create-board-button";
+import type { BoardContent } from "@/types/board";
 
 export default async function Dashboard() {
   const session = await auth0.getSession();
@@ -63,32 +64,48 @@ export default async function Dashboard() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {boards.map((board) => (
-              <Link
-                key={board.id}
-                href={`/board/${board.id}`}
-                className="block bg-white rounded-xl border border-stone-200 p-5 hover:shadow-lg hover:border-brand-300 transition-all"
-              >
-                <h3 className="font-semibold text-stone-800 text-lg mb-1">
-                  {board.title}
-                </h3>
-                <div className="flex gap-2 flex-wrap mb-3">
-                  {board.gradeLevel && (
-                    <span className="text-xs bg-brand-50 text-brand-700 px-2 py-0.5 rounded-full">
-                      {board.gradeLevel}
-                    </span>
+            {boards.map((board) => {
+              let content: BoardContent | null = null;
+              try {
+                content = JSON.parse(board.content) as BoardContent;
+              } catch {}
+              const mainTopic = content?.initialPlanning?.mainIdea?.value;
+              const drivingQuestion =
+                content?.designThinking?.drivingQuestion?.value;
+              const displayTitle = mainTopic || board.title;
+
+              return (
+                <Link
+                  key={board.id}
+                  href={`/board/${board.id}`}
+                  className="block bg-white rounded-xl border border-stone-200 p-5 hover:shadow-lg hover:border-brand-300 transition-all"
+                >
+                  <h3 className="font-semibold text-stone-800 text-lg mb-1">
+                    {displayTitle}
+                  </h3>
+                  {drivingQuestion && (
+                    <p className="text-sm text-stone-500 italic mb-2 line-clamp-2">
+                      {drivingQuestion}
+                    </p>
                   )}
-                  {board.state && (
-                    <span className="text-xs bg-brand-100 text-brand-600 px-2 py-0.5 rounded-full">
-                      {board.state}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-stone-400">
-                  Updated {new Date(board.updatedAt).toLocaleDateString()}
-                </p>
-              </Link>
-            ))}
+                  <div className="flex gap-2 flex-wrap mb-3">
+                    {board.gradeLevel && (
+                      <span className="text-xs bg-brand-50 text-brand-700 px-2 py-0.5 rounded-full">
+                        {board.gradeLevel}
+                      </span>
+                    )}
+                    {board.state && (
+                      <span className="text-xs bg-brand-100 text-brand-600 px-2 py-0.5 rounded-full">
+                        {board.state}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-stone-400">
+                    Updated {new Date(board.updatedAt).toLocaleDateString()}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
         )}
       </main>
