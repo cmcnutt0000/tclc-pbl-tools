@@ -483,7 +483,7 @@ export default function BoardPageClient({
       const res = await fetch("/api/ai/collaborate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content, context, userMessage }),
+        body: JSON.stringify({ content, context, userMessage, lessons }),
       });
       const data = await res.json();
       if (data.error) {
@@ -500,16 +500,46 @@ export default function BoardPageClient({
     }
   }
 
-  function handleAcceptChange(change: ProposedChange) {
-    handleContentChange(
-      updateCellValue(content, change.cellId, change.proposedValue),
+  function applyLessonChange(cellId: string, value: string) {
+    // cellId format: lesson-{lessonId}-{sectionKey}
+    const match = cellId.match(
+      /^lesson-(.+)-(learningObjectives|materials|warmUpHook|mainActivities|closingExitTicket|differentiationNotes|standardsAddressed)$/,
     );
+    if (!match) return;
+    const [, lessonId, sectionKey] = match;
+    const lesson = lessons.find((l) => l.id === lessonId);
+    if (!lesson) return;
+    const updatedContent = { ...lesson.content, [sectionKey]: value };
+    setLessons((prev) =>
+      prev.map((l) =>
+        l.id === lessonId ? { ...l, content: updatedContent } : l,
+      ),
+    );
+    fetch("/api/lessons/" + lessonId, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: updatedContent }),
+    });
+  }
+
+  function handleAcceptChange(change: ProposedChange) {
+    if (change.cellId.startsWith("lesson-")) {
+      applyLessonChange(change.cellId, change.proposedValue);
+    } else {
+      handleContentChange(
+        updateCellValue(content, change.cellId, change.proposedValue),
+      );
+    }
   }
 
   function handleAcceptAllChanges(changes: ProposedChange[]) {
     let nc = content;
     for (const change of changes) {
-      nc = updateCellValue(nc, change.cellId, change.proposedValue);
+      if (change.cellId.startsWith("lesson-")) {
+        applyLessonChange(change.cellId, change.proposedValue);
+      } else {
+        nc = updateCellValue(nc, change.cellId, change.proposedValue);
+      }
     }
     handleContentChange(nc);
   }
@@ -769,6 +799,78 @@ export default function BoardPageClient({
     }
   }
 
+  async function handleImproveLessonSection(
+    lesson: LessonPlan,
+    sectionKey: keyof LessonPlanContent,
+    feedback: string,
+  ) {
+    const sectionLabel =
+      {
+        learningObjectives: "Learning Objectives",
+        materials: "Materials Needed",
+        warmUpHook: "Warm-Up / Hook",
+        mainActivities: "Main Activities",
+        closingExitTicket: "Closing / Exit Ticket",
+        differentiationNotes: "Differentiation",
+        standardsAddressed: "Standards Addressed",
+      }[sectionKey] || sectionKey;
+
+    const syntheticCell = {
+      id: "lesson-" + lesson.id + "-" + sectionKey,
+      label: lesson.subject + " — " + sectionLabel,
+      value: lesson.content[sectionKey] || "",
+    };
+
+    try {
+      const res = await fetch("/api/ai/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cellId: "lessonSection",
+          cell: syntheticCell,
+          content,
+          context,
+          feedback:
+            "This is a section of a lesson plan for " +
+            lesson.subject +
+            " (" +
+            lesson.periodMinutes +
+            " min period). " +
+            "Improve this " +
+            sectionLabel +
+            " section based on teacher feedback: " +
+            feedback +
+            ". Keep it student-centered and inquiry-driven.",
+        }),
+      });
+      const data = await res.json();
+      if (data.error) {
+        alert("AI improvement failed. Please try again.");
+        return;
+      }
+      const suggestions = data.suggestions || [];
+      if (suggestions.length > 0) {
+        const updatedContent = {
+          ...lesson.content,
+          [sectionKey]: suggestions[0].text,
+        };
+        setLessons((prev) =>
+          prev.map((l) =>
+            l.id === lesson.id ? { ...l, content: updatedContent } : l,
+          ),
+        );
+        await fetch("/api/lessons/" + lesson.id, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: updatedContent }),
+        });
+      }
+    } catch (err) {
+      console.error("Lesson section improvement failed:", err);
+      alert("Unable to reach the AI service. Please try again.");
+    }
+  }
+
   const sidebarOpen = !collaboratorCollapsed;
 
   return (
@@ -861,6 +963,7 @@ export default function BoardPageClient({
             onUpdateLesson={handleUpdateLesson}
             onDeleteLesson={handleDeleteLesson}
             onRegenerateLesson={handleRegenerateLesson}
+            onImproveLessonSection={handleImproveLessonSection}
             lessonLoading={lessonLoading}
           />
         </div>

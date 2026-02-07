@@ -9,6 +9,11 @@ interface LessonPlanCardProps {
   onUpdate: (lessonId: string, content: LessonPlanContent) => void;
   onDelete: (lessonId: string) => void;
   onRegenerate: (lesson: LessonPlan) => void;
+  onImproveSection?: (
+    lesson: LessonPlan,
+    sectionKey: keyof LessonPlanContent,
+    feedback: string,
+  ) => Promise<void>;
 }
 
 const LESSON_SECTIONS: Array<{
@@ -24,11 +29,79 @@ const LESSON_SECTIONS: Array<{
   { key: "standardsAddressed", label: "Standards Addressed" },
 ];
 
+function AiImproveButton({
+  onSubmit,
+}: {
+  onSubmit: (feedback: string) => Promise<void>;
+}) {
+  const [showInput, setShowInput] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  if (!showInput) {
+    return (
+      <button
+        onClick={() => setShowInput(true)}
+        className="opacity-0 group-hover/section:opacity-100 transition-opacity text-[10px] bg-brand-100 hover:bg-brand-200 text-brand-700 px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap"
+        title="Improve with AI"
+      >
+        &#x2728; AI
+      </button>
+    );
+  }
+
+  return (
+    <div className="space-y-1.5 mt-1">
+      <textarea
+        value={feedback}
+        onChange={(e) => setFeedback(e.target.value)}
+        placeholder="What would you like changed?"
+        className="w-full text-xs border border-stone-200 rounded px-2 py-1.5 resize-none focus:outline-none focus:border-brand-400 bg-white"
+        rows={2}
+        disabled={loading}
+        autoFocus
+      />
+      <div className="flex gap-2">
+        <button
+          onClick={async () => {
+            if (!feedback.trim()) return;
+            setLoading(true);
+            await onSubmit(feedback);
+            setLoading(false);
+            setShowInput(false);
+            setFeedback("");
+          }}
+          disabled={loading || !feedback.trim()}
+          className={
+            "text-xs px-2 py-1 rounded font-medium " +
+            (loading || !feedback.trim()
+              ? "bg-stone-200 text-stone-400"
+              : "bg-brand-800 hover:bg-brand-900 text-white")
+          }
+        >
+          {loading ? "Improving..." : "\u2728 Improve"}
+        </button>
+        <button
+          onClick={() => {
+            setShowInput(false);
+            setFeedback("");
+          }}
+          disabled={loading}
+          className="text-xs text-stone-400 hover:text-stone-600"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function LessonPlanCard({
   lesson,
   onUpdate,
   onDelete,
   onRegenerate,
+  onImproveSection,
 }: LessonPlanCardProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -91,10 +164,17 @@ export default function LessonPlanCard({
       {expanded && (
         <div className="border-t border-stone-100 px-3 py-2 space-y-3">
           {LESSON_SECTIONS.map(({ key, label }) => (
-            <div key={key}>
-              <label className="text-[10px] text-stone-700 uppercase tracking-wide font-semibold block mb-1">
-                {label}
-              </label>
+            <div key={key} className="group/section">
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-[10px] text-stone-700 uppercase tracking-wide font-semibold">
+                  {label}
+                </label>
+                {onImproveSection && lesson.content[key] && (
+                  <AiImproveButton
+                    onSubmit={(fb) => onImproveSection(lesson, key, fb)}
+                  />
+                )}
+              </div>
               <div className="text-sm text-stone-800">
                 <CollapsibleMarkdown
                   content={lesson.content[key] || ""}

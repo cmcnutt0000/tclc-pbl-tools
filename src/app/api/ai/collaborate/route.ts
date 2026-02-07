@@ -10,8 +10,13 @@ const anthropic = createAnthropic({
 
 export async function POST(request: Request) {
   try {
-    const { content, context, userMessage } = await request.json();
-    const prompt = buildCollaboratorPrompt(content, context, userMessage);
+    const { content, context, userMessage, lessons } = await request.json();
+    const prompt = buildCollaboratorPrompt(
+      content,
+      context,
+      userMessage,
+      lessons,
+    );
     const { object } = await generateObject({
       model: anthropic("claude-sonnet-4-5-20250929"),
       schema: collaboratorResponseSchema,

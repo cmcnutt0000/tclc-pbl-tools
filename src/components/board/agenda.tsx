@@ -28,6 +28,11 @@ interface AgendaProps {
   onUpdateLesson?: (lessonId: string, content: LessonPlanContent) => void;
   onDeleteLesson?: (lessonId: string) => void;
   onRegenerateLesson?: (lesson: LessonPlan) => void;
+  onImproveLessonSection?: (
+    lesson: LessonPlan,
+    sectionKey: keyof LessonPlanContent,
+    feedback: string,
+  ) => Promise<void>;
   lessonLoading?: Record<string, boolean>;
 }
 
@@ -111,6 +116,7 @@ export default function Agenda({
   onUpdateLesson,
   onDeleteLesson,
   onRegenerateLesson,
+  onImproveLessonSection,
   lessonLoading,
 }: AgendaProps) {
   const [collapsed, setCollapsed] = useState(false);
@@ -415,6 +421,7 @@ export default function Agenda({
                             onUpdate={onUpdateLesson || (() => {})}
                             onDelete={onDeleteLesson || (() => {})}
                             onRegenerate={onRegenerateLesson || (() => {})}
+                            onImproveSection={onImproveLessonSection}
                           />
                         ))}
                       </div>

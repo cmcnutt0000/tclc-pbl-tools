@@ -1,10 +1,11 @@
-import type { BoardContent, BoardContext } from "@/types/board";
+import type { BoardContent, BoardContext, LessonPlan } from "@/types/board";
 import { serializeBoard } from "./hqpbl-prompt";
 
 export function buildCollaboratorPrompt(
   content: BoardContent,
   context: BoardContext,
   userMessage: string,
+  lessons?: LessonPlan[],
 ): string {
   const lines: string[] = [];
 
@@ -46,6 +47,50 @@ export function buildCollaboratorPrompt(
   lines.push(serializeBoard(content));
   lines.push("");
 
+  // Lesson plans
+  if (lessons && lessons.length > 0) {
+    lines.push("## Lesson Plans");
+    for (const lesson of lessons) {
+      const agendaEntry = content.agenda.find(
+        (a) => a.id === lesson.agendaEntryId,
+      );
+      const sessionTitle = agendaEntry?.leads || "Unknown Session";
+      lines.push(
+        "--- Lesson: " +
+          lesson.subject +
+          " (" +
+          lesson.periodMinutes +
+          " min) — Session: " +
+          sessionTitle +
+          " [ID prefix: lesson-" +
+          lesson.id +
+          "] ---",
+      );
+      lines.push(
+        "Learning Objectives: " +
+          (lesson.content.learningObjectives || "(empty)"),
+      );
+      lines.push("Materials: " + (lesson.content.materials || "(empty)"));
+      lines.push("Warm-Up / Hook: " + (lesson.content.warmUpHook || "(empty)"));
+      lines.push(
+        "Main Activities: " + (lesson.content.mainActivities || "(empty)"),
+      );
+      lines.push(
+        "Closing / Exit Ticket: " +
+          (lesson.content.closingExitTicket || "(empty)"),
+      );
+      lines.push(
+        "Differentiation: " +
+          (lesson.content.differentiationNotes || "(empty)"),
+      );
+      lines.push(
+        "Standards Addressed: " +
+          (lesson.content.standardsAddressed || "(empty)"),
+      );
+      lines.push("");
+    }
+  }
+
   // Cell ID reference
   lines.push("## Valid Cell IDs (use these exact IDs in proposedChanges)");
   lines.push(
@@ -59,6 +104,19 @@ export function buildCollaboratorPrompt(
   lines.push(
     "Design Thinking: drivingQuestion, empathize, milestoneEmpathize, define, milestoneDefine, ideate, milestoneIdeate, prototypeTest, milestonePrototypeTest",
   );
+  if (lessons && lessons.length > 0) {
+    lines.push(
+      "Lesson Plans: " +
+        lessons
+          .map(
+            (l) =>
+              "lesson-" +
+              l.id +
+              "-{learningObjectives|materials|warmUpHook|mainActivities|closingExitTicket|differentiationNotes|standardsAddressed}",
+          )
+          .join(", "),
+    );
+  }
   lines.push("");
 
   // Instructions
