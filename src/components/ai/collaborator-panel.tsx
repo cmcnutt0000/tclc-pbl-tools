@@ -58,6 +58,12 @@ interface CollaboratorPanelProps {
   response: CollaboratorResponse | null;
   onAcceptChange: (change: ProposedChange) => void;
   onAcceptAll: (changes: ProposedChange[]) => void;
+  starters?: Array<{
+    id: string;
+    icon: string;
+    label: string;
+    message: string;
+  }>;
 }
 
 type ChangeStatus = "pending" | "accepted" | "rejected";
@@ -328,7 +334,9 @@ export default function CollaboratorPanel({
   response,
   onAcceptChange,
   onAcceptAll,
+  starters: customStarters,
 }: CollaboratorPanelProps) {
+  const activeStarters = customStarters || STARTERS;
   const [inputText, setInputText] = useState("");
   const [changeStatuses, setChangeStatuses] = useState<
     Record<number, ChangeStatus>
@@ -475,7 +483,7 @@ export default function CollaboratorPanel({
             <p className="text-xs text-stone-400 uppercase tracking-wide font-medium mb-3">
               Quick starts
             </p>
-            {STARTERS.map((s) => (
+            {activeStarters.map((s) => (
               <button
                 key={s.id}
                 onClick={() => handleStarterClick(s.message)}

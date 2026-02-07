@@ -7,7 +7,6 @@ import type {
   BoardContext,
   CellContent,
   LessonPlan,
-  LessonPlanContent,
 } from "@/types/board";
 import {
   syncStandardsCells,
@@ -63,9 +62,6 @@ export default function BoardPageClient({
   const [titleLoading, setTitleLoading] = useState(false);
 
   const [lessons, setLessons] = useState<LessonPlan[]>([]);
-  const [lessonLoading, setLessonLoading] = useState<Record<string, boolean>>(
-    {},
-  );
 
   // Undo/redo history
   const historyRef = useRef<{
@@ -500,46 +496,16 @@ export default function BoardPageClient({
     }
   }
 
-  function applyLessonChange(cellId: string, value: string) {
-    // cellId format: lesson-{lessonId}-{sectionKey}
-    const match = cellId.match(
-      /^lesson-(.+)-(learningObjectives|materials|warmUpHook|mainActivities|closingExitTicket|differentiationNotes|standardsAddressed)$/,
-    );
-    if (!match) return;
-    const [, lessonId, sectionKey] = match;
-    const lesson = lessons.find((l) => l.id === lessonId);
-    if (!lesson) return;
-    const updatedContent = { ...lesson.content, [sectionKey]: value };
-    setLessons((prev) =>
-      prev.map((l) =>
-        l.id === lessonId ? { ...l, content: updatedContent } : l,
-      ),
-    );
-    fetch("/api/lessons/" + lessonId, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: updatedContent }),
-    });
-  }
-
   function handleAcceptChange(change: ProposedChange) {
-    if (change.cellId.startsWith("lesson-")) {
-      applyLessonChange(change.cellId, change.proposedValue);
-    } else {
-      handleContentChange(
-        updateCellValue(content, change.cellId, change.proposedValue),
-      );
-    }
+    handleContentChange(
+      updateCellValue(content, change.cellId, change.proposedValue),
+    );
   }
 
   function handleAcceptAllChanges(changes: ProposedChange[]) {
     let nc = content;
     for (const change of changes) {
-      if (change.cellId.startsWith("lesson-")) {
-        applyLessonChange(change.cellId, change.proposedValue);
-      } else {
-        nc = updateCellValue(nc, change.cellId, change.proposedValue);
-      }
+      nc = updateCellValue(nc, change.cellId, change.proposedValue);
     }
     handleContentChange(nc);
   }
@@ -667,210 +633,6 @@ export default function BoardPageClient({
     }
   }
 
-  async function handleGenerateLessons(
-    agendaEntryId: string,
-    sessionIndex: number,
-    selections: Array<{ subject: string; periodMinutes: number }>,
-  ) {
-    setLessonLoading((prev) => ({ ...prev, [agendaEntryId]: true }));
-
-    const agendaEntry = content.agenda[sessionIndex];
-    if (!agendaEntry) {
-      setLessonLoading((prev) => ({ ...prev, [agendaEntryId]: false }));
-      return;
-    }
-
-    try {
-      for (const { subject, periodMinutes } of selections) {
-        const aiRes = await fetch("/api/ai/generate-lesson", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            content,
-            context,
-            agendaEntry,
-            sessionIndex,
-            subject,
-            periodMinutes,
-          }),
-        });
-        const aiData = await aiRes.json();
-        if (aiData.error) {
-          console.error(
-            "Lesson generation error for " + subject + ":",
-            aiData.error,
-          );
-          continue;
-        }
-
-        const saveRes = await fetch("/api/lessons", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            boardId,
-            agendaEntryId,
-            subject,
-            periodMinutes,
-            content: aiData,
-          }),
-        });
-        const saved = await saveRes.json();
-        if (!saved.error) {
-          setLessons((prev) => [...prev, saved]);
-        }
-      }
-    } catch (err) {
-      console.error("Lesson generation failed:", err);
-      alert("Unable to generate lessons. Please try again.");
-    } finally {
-      setLessonLoading((prev) => ({ ...prev, [agendaEntryId]: false }));
-    }
-  }
-
-  async function handleUpdateLesson(
-    lessonId: string,
-    updatedContent: LessonPlanContent,
-  ) {
-    setLessons((prev) =>
-      prev.map((l) =>
-        l.id === lessonId ? { ...l, content: updatedContent } : l,
-      ),
-    );
-    await fetch("/api/lessons/" + lessonId, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: updatedContent }),
-    });
-  }
-
-  async function handleDeleteLesson(lessonId: string) {
-    setLessons((prev) => prev.filter((l) => l.id !== lessonId));
-    await fetch("/api/lessons/" + lessonId, { method: "DELETE" });
-  }
-
-  async function handleRegenerateLesson(lesson: LessonPlan) {
-    const sessionIndex = content.agenda.findIndex(
-      (a) => a.id === lesson.agendaEntryId,
-    );
-    if (sessionIndex === -1) return;
-
-    setLessonLoading((prev) => ({
-      ...prev,
-      [lesson.agendaEntryId]: true,
-    }));
-
-    try {
-      const agendaEntry = content.agenda[sessionIndex];
-      const aiRes = await fetch("/api/ai/generate-lesson", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          content,
-          context,
-          agendaEntry,
-          sessionIndex,
-          subject: lesson.subject,
-          periodMinutes: lesson.periodMinutes,
-        }),
-      });
-      const aiData = await aiRes.json();
-      if (aiData.error) {
-        alert("Lesson regeneration failed. Please try again.");
-        return;
-      }
-
-      const saveRes = await fetch("/api/lessons/" + lesson.id, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content: aiData }),
-      });
-      const saved = await saveRes.json();
-      if (!saved.error) {
-        setLessons((prev) => prev.map((l) => (l.id === lesson.id ? saved : l)));
-      }
-    } catch (err) {
-      console.error("Lesson regeneration failed:", err);
-      alert("Unable to regenerate lesson. Please try again.");
-    } finally {
-      setLessonLoading((prev) => ({
-        ...prev,
-        [lesson.agendaEntryId]: false,
-      }));
-    }
-  }
-
-  async function handleImproveLessonSection(
-    lesson: LessonPlan,
-    sectionKey: keyof LessonPlanContent,
-    feedback: string,
-  ) {
-    const sectionLabel =
-      {
-        learningObjectives: "Learning Objectives",
-        materials: "Materials Needed",
-        warmUpHook: "Warm-Up / Hook",
-        mainActivities: "Main Activities",
-        closingExitTicket: "Closing / Exit Ticket",
-        differentiationNotes: "Differentiation",
-        standardsAddressed: "Standards Addressed",
-      }[sectionKey] || sectionKey;
-
-    const syntheticCell = {
-      id: "lesson-" + lesson.id + "-" + sectionKey,
-      label: lesson.subject + " — " + sectionLabel,
-      value: lesson.content[sectionKey] || "",
-    };
-
-    try {
-      const res = await fetch("/api/ai/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          cellId: "lessonSection",
-          cell: syntheticCell,
-          content,
-          context,
-          feedback:
-            "This is a section of a lesson plan for " +
-            lesson.subject +
-            " (" +
-            lesson.periodMinutes +
-            " min period). " +
-            "Improve this " +
-            sectionLabel +
-            " section based on teacher feedback: " +
-            feedback +
-            ". Keep it student-centered and inquiry-driven.",
-        }),
-      });
-      const data = await res.json();
-      if (data.error) {
-        alert("AI improvement failed. Please try again.");
-        return;
-      }
-      const suggestions = data.suggestions || [];
-      if (suggestions.length > 0) {
-        const updatedContent = {
-          ...lesson.content,
-          [sectionKey]: suggestions[0].text,
-        };
-        setLessons((prev) =>
-          prev.map((l) =>
-            l.id === lesson.id ? { ...l, content: updatedContent } : l,
-          ),
-        );
-        await fetch("/api/lessons/" + lesson.id, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: updatedContent }),
-        });
-      }
-    } catch (err) {
-      console.error("Lesson section improvement failed:", err);
-      alert("Unable to reach the AI service. Please try again.");
-    }
-  }
-
   const sidebarOpen = !collaboratorCollapsed;
 
   return (
@@ -958,13 +720,8 @@ export default function BoardPageClient({
             disabled={!contextComplete}
             canGenerateBoard={filledCellCount >= 2}
             canGenerateTitle={!!content.initialPlanning.mainIdea.value.trim()}
+            boardId={boardId}
             lessons={lessons}
-            onGenerateLessons={handleGenerateLessons}
-            onUpdateLesson={handleUpdateLesson}
-            onDeleteLesson={handleDeleteLesson}
-            onRegenerateLesson={handleRegenerateLesson}
-            onImproveLessonSection={handleImproveLessonSection}
-            lessonLoading={lessonLoading}
           />
         </div>
 

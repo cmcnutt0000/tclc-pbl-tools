@@ -4,14 +4,22 @@ import { lessonPlanGenerationSchema } from "@/lib/ai/schemas/lesson-generation";
 import { PBL_SYSTEM_PROMPT } from "@/lib/ai/prompts/system-prompt";
 import { buildLessonPrompt } from "@/lib/ai/prompts/lesson-prompt";
 
+export const maxDuration = 120;
+
 const anthropic = createAnthropic({
   apiKey: process.env.TCLC_ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY,
 });
 
 export async function POST(request: Request) {
   try {
-    const { content, context, agendaEntry, sessionIndex, subject, periodMinutes } =
-      await request.json();
+    const {
+      content,
+      context,
+      agendaEntry,
+      sessionIndex,
+      subject,
+      periodMinutes,
+    } = await request.json();
 
     const prompt = buildLessonPrompt(
       content,
@@ -32,7 +40,9 @@ export async function POST(request: Request) {
     return Response.json(object);
   } catch (err: any) {
     const message =
-      err?.responseBody || err?.message || "Lesson generation failed";
+      typeof err?.responseBody === "string"
+        ? err.responseBody
+        : err?.message || "Lesson generation failed";
     console.error("AI generate-lesson error:", message);
     return Response.json({ error: message }, { status: 500 });
   }

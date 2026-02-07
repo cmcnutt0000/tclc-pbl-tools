@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { AgendaEntry, LessonPlan, LessonPlanContent } from "@/types/board";
+import type { AgendaEntry, LessonPlan } from "@/types/board";
 import { createEmptyAgendaEntry } from "@/types/board";
 import CollapsibleMarkdown from "./collapsible-markdown";
-import LessonPlanCard from "./lesson-plan-card";
-import LessonGenerator from "./lesson-generator";
 
 interface AgendaProps {
   entries: AgendaEntry[];
@@ -18,22 +16,8 @@ interface AgendaProps {
   ) => Promise<void>;
   agendaLoading?: boolean;
   boardComplete?: boolean;
-  subjects?: string[];
+  boardId?: string;
   lessons?: LessonPlan[];
-  onGenerateLessons?: (
-    agendaEntryId: string,
-    sessionIndex: number,
-    selections: Array<{ subject: string; periodMinutes: number }>,
-  ) => void;
-  onUpdateLesson?: (lessonId: string, content: LessonPlanContent) => void;
-  onDeleteLesson?: (lessonId: string) => void;
-  onRegenerateLesson?: (lesson: LessonPlan) => void;
-  onImproveLessonSection?: (
-    lesson: LessonPlan,
-    sectionKey: keyof LessonPlanContent,
-    feedback: string,
-  ) => Promise<void>;
-  lessonLoading?: Record<string, boolean>;
 }
 
 function AiImproveButton({
@@ -110,23 +94,14 @@ export default function Agenda({
   onFixWithAi,
   agendaLoading,
   boardComplete,
-  subjects,
+  boardId,
   lessons,
-  onGenerateLessons,
-  onUpdateLesson,
-  onDeleteLesson,
-  onRegenerateLesson,
-  onImproveLessonSection,
-  lessonLoading,
 }: AgendaProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [showDayInput, setShowDayInput] = useState(false);
   const [numDays, setNumDays] = useState(10);
   const [editingContent, setEditingContent] = useState<number | null>(null);
   const [editingReflection, setEditingReflection] = useState<number | null>(
-    null,
-  );
-  const [showLessonGenerator, setShowLessonGenerator] = useState<string | null>(
     null,
   );
 
@@ -146,6 +121,8 @@ export default function Agenda({
       return;
     onChange(entries.filter((_, i) => i !== index));
   }
+
+  const totalLessons = lessons?.length || 0;
 
   return (
     <section className="mb-8">
@@ -224,213 +201,181 @@ export default function Agenda({
             )}
           </>
         )}
+        {boardId && entries.length > 0 && entries[0].eventsContent && (
+          <a
+            href={"/board/" + boardId + "/lessons"}
+            className="text-xs font-semibold px-3 py-1 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-700 transition-colors flex items-center gap-1"
+          >
+            Lesson Plans
+            {totalLessons > 0 && (
+              <span className="bg-brand-200 text-brand-800 px-1.5 py-0.5 rounded-full text-[10px] font-bold">
+                {totalLessons}
+              </span>
+            )}
+          </a>
+        )}
       </div>
       {!collapsed && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {entries.map((entry, i) => (
-            <div
-              key={entry.id}
-              className="group/entry rounded-lg border border-stone-200 p-3 space-y-2"
-              style={{ backgroundColor: "#C2D5D8" }}
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-stone-800">
-                  {"Session " + (i + 1)}
-                </span>
-                {entries.length > 1 && (
-                  <button
-                    onClick={() => removeEntry(i)}
-                    className="opacity-0 group-hover/entry:opacity-100 transition-opacity w-5 h-5 flex items-center justify-center rounded-full text-stone-400 hover:bg-red-100 hover:text-red-600"
-                    title="Remove session"
-                  >
-                    <svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 10 10"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
+          {entries.map((entry, i) => {
+            const entryLessonCount =
+              lessons?.filter((l) => l.agendaEntryId === entry.id).length || 0;
+
+            return (
+              <div
+                key={entry.id}
+                className="group/entry rounded-lg border border-stone-200 p-3 space-y-2"
+                style={{ backgroundColor: "#C2D5D8" }}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-stone-800">
+                    {"Session " + (i + 1)}
+                  </span>
+                  {entries.length > 1 && (
+                    <button
+                      onClick={() => removeEntry(i)}
+                      className="opacity-0 group-hover/entry:opacity-100 transition-opacity w-5 h-5 flex items-center justify-center rounded-full text-stone-400 hover:bg-red-100 hover:text-red-600"
+                      title="Remove session"
                     >
-                      <line x1="1" y1="1" x2="9" y2="9" />
-                      <line x1="9" y1="1" x2="1" y2="9" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-              {entry.date && (
-                <div className="text-[10px] font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded inline-block uppercase tracking-wide">
-                  {entry.date}
-                </div>
-              )}
-              <input
-                type="text"
-                value={entry.leads}
-                onChange={(e) => updateEntry(i, "leads", e.target.value)}
-                placeholder="Session title"
-                className="w-full text-sm font-medium border border-stone-200 rounded px-2 py-1 bg-white"
-              />
-              <div className="min-h-[60px]">
-                <div className="flex items-center justify-between">
-                  <label className="text-[10px] text-stone-700 uppercase tracking-wide font-semibold">
-                    Activities
-                  </label>
-                  {onFixWithAi && entry.eventsContent && (
-                    <AiImproveButton
-                      onSubmit={(fb) => onFixWithAi(i, "eventsContent", fb)}
-                    />
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 10 10"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                      >
+                        <line x1="1" y1="1" x2="9" y2="9" />
+                        <line x1="9" y1="1" x2="1" y2="9" />
+                      </svg>
+                    </button>
                   )}
                 </div>
-                {editingContent === i ? (
-                  <textarea
-                    value={entry.eventsContent}
-                    onChange={(e) =>
-                      updateEntry(i, "eventsContent", e.target.value)
-                    }
-                    onBlur={() => setEditingContent(null)}
-                    autoFocus
-                    className="w-full text-sm border border-stone-200 rounded px-2 py-1 bg-white resize-none min-h-[60px]"
-                    rows={4}
-                  />
-                ) : entry.eventsContent ? (
-                  <div
-                    onDoubleClick={() => setEditingContent(i)}
-                    className="text-sm text-stone-800 cursor-default"
-                    title="Double-click to edit"
-                  >
-                    <CollapsibleMarkdown
-                      content={entry.eventsContent}
-                      onChange={(val) => updateEntry(i, "eventsContent", val)}
-                    />
+                {entry.date && (
+                  <div className="text-[10px] font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded inline-block uppercase tracking-wide">
+                    {entry.date}
                   </div>
-                ) : (
-                  <textarea
-                    value={entry.eventsContent}
-                    onChange={(e) =>
-                      updateEntry(i, "eventsContent", e.target.value)
-                    }
-                    placeholder="Activities and content"
-                    className="w-full text-sm border border-stone-200 rounded px-2 py-1 bg-white resize-none min-h-[60px]"
-                    rows={3}
-                  />
                 )}
-              </div>
-              <div>
-                <div className="flex items-center justify-between">
-                  <label className="text-[10px] text-stone-700 uppercase tracking-wide font-semibold">
-                    Reflection
-                  </label>
-                  {onFixWithAi && entry.reflection && (
-                    <AiImproveButton
-                      onSubmit={(fb) => onFixWithAi(i, "reflection", fb)}
-                    />
-                  )}
-                </div>
-                {editingReflection === i ? (
-                  <textarea
-                    value={entry.reflection}
-                    onChange={(e) =>
-                      updateEntry(i, "reflection", e.target.value)
-                    }
-                    onBlur={() => setEditingReflection(null)}
-                    autoFocus
-                    className="w-full text-sm border border-stone-200 rounded px-2 py-1 bg-white resize-none min-h-[40px]"
-                    rows={2}
-                  />
-                ) : entry.reflection ? (
-                  <div
-                    onDoubleClick={() => setEditingReflection(i)}
-                    className="text-sm text-stone-800 cursor-default"
-                    title="Double-click to edit"
-                  >
-                    <CollapsibleMarkdown
-                      content={entry.reflection}
-                      onChange={(val) => updateEntry(i, "reflection", val)}
-                    />
-                  </div>
-                ) : (
-                  <textarea
-                    value={entry.reflection}
-                    onChange={(e) =>
-                      updateEntry(i, "reflection", e.target.value)
-                    }
-                    placeholder="Reflection prompt"
-                    className="w-full text-sm border border-stone-200 rounded px-2 py-1 bg-white resize-none min-h-[40px]"
-                    rows={2}
-                  />
-                )}
-              </div>
-              {/* Lesson Plans */}
-              {(() => {
-                const entryLessons =
-                  lessons?.filter((l) => l.agendaEntryId === entry.id) || [];
-                const isLoading = !!lessonLoading?.[entry.id];
-                return (
-                  <div className="border-t border-stone-300/50 pt-2 mt-2">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="text-[10px] text-stone-700 uppercase tracking-wide font-semibold">
-                        Lesson Plans
-                        {entryLessons.length > 0 && (
-                          <span className="text-stone-400 ml-1">
-                            ({entryLessons.length})
-                          </span>
-                        )}
-                      </label>
-                      {subjects &&
-                        subjects.length > 0 &&
-                        entry.eventsContent &&
-                        onGenerateLessons && (
-                          <button
-                            onClick={() =>
-                              setShowLessonGenerator(
-                                showLessonGenerator === entry.id
-                                  ? null
-                                  : entry.id,
-                              )
-                            }
-                            disabled={isLoading}
-                            className={
-                              "text-[10px] px-1.5 py-0.5 rounded-full font-medium whitespace-nowrap " +
-                              (isLoading
-                                ? "bg-stone-200 text-stone-400"
-                                : "bg-brand-100 hover:bg-brand-200 text-brand-700")
-                            }
-                          >
-                            {isLoading ? "Generating..." : "+ Generate Lessons"}
-                          </button>
-                        )}
-                    </div>
-                    {showLessonGenerator === entry.id &&
-                      subjects &&
-                      onGenerateLessons && (
-                        <LessonGenerator
-                          subjects={subjects}
-                          onGenerate={(selections) => {
-                            onGenerateLessons(entry.id, i, selections);
-                            setShowLessonGenerator(null);
-                          }}
-                          onCancel={() => setShowLessonGenerator(null)}
-                          loading={isLoading}
-                        />
-                      )}
-                    {entryLessons.length > 0 && (
-                      <div className="space-y-1.5 mt-1.5">
-                        {entryLessons.map((lesson) => (
-                          <LessonPlanCard
-                            key={lesson.id}
-                            lesson={lesson}
-                            onUpdate={onUpdateLesson || (() => {})}
-                            onDelete={onDeleteLesson || (() => {})}
-                            onRegenerate={onRegenerateLesson || (() => {})}
-                            onImproveSection={onImproveLessonSection}
-                          />
-                        ))}
-                      </div>
+                <input
+                  type="text"
+                  value={entry.leads}
+                  onChange={(e) => updateEntry(i, "leads", e.target.value)}
+                  placeholder="Session title"
+                  className="w-full text-sm font-medium border border-stone-200 rounded px-2 py-1 bg-white"
+                />
+                <div className="min-h-[60px]">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] text-stone-700 uppercase tracking-wide font-semibold">
+                      Activities
+                    </label>
+                    {onFixWithAi && entry.eventsContent && (
+                      <AiImproveButton
+                        onSubmit={(fb) => onFixWithAi(i, "eventsContent", fb)}
+                      />
                     )}
                   </div>
-                );
-              })()}
-            </div>
-          ))}
+                  {editingContent === i ? (
+                    <textarea
+                      value={entry.eventsContent}
+                      onChange={(e) =>
+                        updateEntry(i, "eventsContent", e.target.value)
+                      }
+                      onBlur={() => setEditingContent(null)}
+                      autoFocus
+                      className="w-full text-sm border border-stone-200 rounded px-2 py-1 bg-white resize-none min-h-[60px]"
+                      rows={4}
+                    />
+                  ) : entry.eventsContent ? (
+                    <div
+                      onDoubleClick={() => setEditingContent(i)}
+                      className="text-sm text-stone-800 cursor-default"
+                      title="Double-click to edit"
+                    >
+                      <CollapsibleMarkdown
+                        content={entry.eventsContent}
+                        onChange={(val) => updateEntry(i, "eventsContent", val)}
+                      />
+                    </div>
+                  ) : (
+                    <textarea
+                      value={entry.eventsContent}
+                      onChange={(e) =>
+                        updateEntry(i, "eventsContent", e.target.value)
+                      }
+                      placeholder="Activities and content"
+                      className="w-full text-sm border border-stone-200 rounded px-2 py-1 bg-white resize-none min-h-[60px]"
+                      rows={3}
+                    />
+                  )}
+                </div>
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] text-stone-700 uppercase tracking-wide font-semibold">
+                      Reflection
+                    </label>
+                    {onFixWithAi && entry.reflection && (
+                      <AiImproveButton
+                        onSubmit={(fb) => onFixWithAi(i, "reflection", fb)}
+                      />
+                    )}
+                  </div>
+                  {editingReflection === i ? (
+                    <textarea
+                      value={entry.reflection}
+                      onChange={(e) =>
+                        updateEntry(i, "reflection", e.target.value)
+                      }
+                      onBlur={() => setEditingReflection(null)}
+                      autoFocus
+                      className="w-full text-sm border border-stone-200 rounded px-2 py-1 bg-white resize-none min-h-[40px]"
+                      rows={2}
+                    />
+                  ) : entry.reflection ? (
+                    <div
+                      onDoubleClick={() => setEditingReflection(i)}
+                      className="text-sm text-stone-800 cursor-default"
+                      title="Double-click to edit"
+                    >
+                      <CollapsibleMarkdown
+                        content={entry.reflection}
+                        onChange={(val) => updateEntry(i, "reflection", val)}
+                      />
+                    </div>
+                  ) : (
+                    <textarea
+                      value={entry.reflection}
+                      onChange={(e) =>
+                        updateEntry(i, "reflection", e.target.value)
+                      }
+                      placeholder="Reflection prompt"
+                      className="w-full text-sm border border-stone-200 rounded px-2 py-1 bg-white resize-none min-h-[40px]"
+                      rows={2}
+                    />
+                  )}
+                </div>
+                {/* Lesson count + link */}
+                {boardId && entry.eventsContent && (
+                  <div className="border-t border-stone-300/50 pt-2 mt-2">
+                    <a
+                      href={"/board/" + boardId + "/lessons"}
+                      className="flex items-center justify-between text-[10px] text-brand-700 hover:text-brand-800 font-medium transition-colors"
+                    >
+                      <span>
+                        {entryLessonCount > 0
+                          ? entryLessonCount +
+                            " lesson" +
+                            (entryLessonCount !== 1 ? "s" : "")
+                          : "No lessons yet"}
+                      </span>
+                      <span className="text-brand-500 hover:text-brand-700">
+                        View Lessons &rarr;
+                      </span>
+                    </a>
+                  </div>
+                )}
+              </div>
+            );
+          })}
           <button
             onClick={addEntry}
             className="border-2 border-dashed border-brand-200 rounded-lg text-brand-400 hover:border-brand-400 hover:text-brand-600 transition-colors flex items-center justify-center min-h-[200px] text-sm font-medium"
